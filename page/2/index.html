@@ -20,47 +20,28 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Hadoop and HDFShadoop 特点 存很大的数据 写一次，多次读取(不可修改，只可追加) commodity and heterogenious hardwareHadoop 不适合： low-latency data access 大量小尺寸数据 multiple writers arbitary file modification(文件经常会做变动)Hadoop 生态Hadoop">
-<meta property="og:type" content="article">
-<meta property="og:title" content="hadoop-hdfs">
-<meta property="og:url" content="http://example.com/2021/05/08/hadoop-hdfs/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/page/2/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Hadoop and HDFShadoop 特点 存很大的数据 写一次，多次读取(不可修改，只可追加) commodity and heterogenious hardwareHadoop 不适合： low-latency data access 大量小尺寸数据 multiple writers arbitary file modification(文件经常会做变动)Hadoop 生态Hadoop">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/hdfs_architecture.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/Secondary_Namenode.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/hdfs_read.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/hdfs_write.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/HA.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/jn.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/qjm.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/ha-share-storage.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/checkpoints.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/Data_locality.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/replication.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/Rack_awareness.PNG">
-<meta property="og:image" content="http://example.com/2021/05/08/hadoop-hdfs/yra.PNG">
-<meta property="article:published_time" content="2021-05-08T09:08:39.000Z">
-<meta property="article:modified_time" content="2021-05-08T09:33:36.808Z">
 <meta property="article:author" content="ray">
-<meta property="article:tag" content="大数据学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/05/08/hadoop-hdfs/hdfs_architecture.PNG">
 
-<link rel="canonical" href="http://example.com/2021/05/08/hadoop-hdfs/">
+<link rel="canonical" href="http://example.com/page/2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
-    isPost : true,
+    isHome : true,
+    isPost : false,
     lang   : 'en'
   };
 </script>
 
-  <title>hadoop-hdfs | Hexo</title>
+  <title>Hexo</title>
   
 
 
@@ -158,10 +139,9 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content index posts-expand">
             
-
-    
+      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -177,9 +157,10 @@
       <meta itemprop="name" content="Hexo">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          hadoop-hdfs
-        </h1>
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/08/hadoop-hdfs/" class="post-title-link" itemprop="url">hadoop-hdfs</a>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -203,7 +184,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Hadoop-and-HDFS"><a href="#Hadoop-and-HDFS" class="headerlink" title="Hadoop and HDFS"></a>Hadoop and HDFS</h1><h2 id="hadoop-特点"><a href="#hadoop-特点" class="headerlink" title="hadoop 特点"></a>hadoop 特点</h2><ul>
+          <h1 id="Hadoop-and-HDFS"><a href="#Hadoop-and-HDFS" class="headerlink" title="Hadoop and HDFS"></a>Hadoop and HDFS</h1><h2 id="hadoop-特点"><a href="#hadoop-特点" class="headerlink" title="hadoop 特点"></a>hadoop 特点</h2><ul>
 <li>存很大的数据</li>
 <li>写一次，多次读取(不可修改，只可追加)</li>
 <li>commodity and heterogenious hardware<h2 id="Hadoop-不适合："><a href="#Hadoop-不适合：" class="headerlink" title="Hadoop 不适合："></a>Hadoop 不适合：</h2></li>
@@ -327,37 +308,128 @@ api: java,c, web rest
 </tr>
 </tbody></table>
 
+      
     </div>
 
     
     
     
-
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%AD%A6%E4%B9%A0/" rel="tag"># 大数据学习</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/" rel="prev" title="Hadoop 简介">
-      <i class="fa fa-chevron-left"></i> Hadoop 简介
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/05/10/spark/" rel="next" title="spark">
-      spark <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
+        <div class="post-eof"></div>
       </footer>
-    
   </article>
   
   
   
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">Hadoop 简介</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-29 17:47:13" itemprop="dateCreated datePublished" datetime="2021-04-29T17:47:13+08:00">2021-04-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-04-30 12:10:45" itemprop="dateModified" datetime="2021-04-30T12:10:45+08:00">2021-04-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Hadoop-what"><a href="#Hadoop-what" class="headerlink" title="Hadoop, what?"></a>Hadoop, what?</h2><p>Hadoop 是一个分布式系统基础架构。这篇聊聊他的进化历史，从1.0 到 2.0 </p>
+<h2 id="Hadoop-1-0"><a href="#Hadoop-1-0" class="headerlink" title="Hadoop 1.0"></a>Hadoop 1.0</h2><p>Hadoop 1.0 是最早hadoop的版本，主要由两个部分构成，HDFS(存储) + MapReduce(计算)</p>
+<h3 id="HDFS-（存储）"><a href="#HDFS-（存储）" class="headerlink" title="HDFS （存储）"></a>HDFS （存储）</h3><p>hdfs,全称是hadoop distribute file system,如名字所言: 分布式(Distribute)，文件系统(file system)。就是以分布式的形式存储文件。所谓分布式存储，就是将文件分割成若干个小文件，并分散存储在不同服务器上。不过现在大家都用云存储了，hdfs主要是入门基础。不用太深，图一乐。<br>HDFS 的结构主要由 NameNode(metadata) + DataNode(data) 组成。<br>NameNode 是存储元数据的节点，元数据指的是文件的block位置，size 等。 DataNode 是真正存储数据的位置，通常，一个数据会被分割成几分，且每一份数据会复制3份(为什么是3份)来保证数据不会被丢失。在1.0的版本中，namenode同样负责job的调度，等等，这些都在2.0里丢给了yarn。</p>
+<h3 id="MapReduce（计算）"><a href="#MapReduce（计算）" class="headerlink" title="MapReduce（计算）"></a>MapReduce（计算）</h3><p>在hadoop生态里，最早的是mapreduce,再往后，就是spark，以及tez。<br>MapReduce 是一种计算框架。字面意思，就是把计算分为map 和 reduce。 map中，通常是数据的转换。而reduce，更多的是聚合。比如，现在统计一组数据中男生，女生的个数，处理逻辑如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name1 -&gt; man -&gt; 1</span><br><span class="line">name2 -&gt; women -&gt; 1</span><br><span class="line">name3 -&gt; man -&gt; 1</span><br><span class="line">name4 -&gt; women -&gt; 1</span><br></pre></td></tr></table></figure>
+<p>在这一步，就是map的过程，而将这一步统计在一起</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">man -&gt; 2</span><br><span class="line">women -&gt; 2</span><br></pre></td></tr></table></figure>
+<p>这就属于reduce的过程。而这种计算过程，也对分布式计算非常友好。因此，在最开始的hadoop 1.0 中，结构就是<br>mapreduce(计算) + hdfs（存储）</p>
+<h3 id="Hadoop-1-0的缺点"><a href="#Hadoop-1-0的缺点" class="headerlink" title="Hadoop 1.0的缺点"></a>Hadoop 1.0的缺点</h3><p>最早开始，hadoop 是 mapreduce + hdfs，已经没人用了。一是这样的计算方式，在极大数据的时候，中间的缓存太大。此外，由于最开始，hadoop的调度方式是顺序结构。也就是FIFO，导致了整个计算过程非常缓慢。而且，整个系统没有热备份(也就是实时备份)，已经无法适应大规模计算了，所以1.0的结构已经被彻底抛弃。</p>
+<h2 id="Hadoop-2-0"><a href="#Hadoop-2-0" class="headerlink" title="Hadoop 2.0"></a>Hadoop 2.0</h2><p>Hadoop 2.0的时候，整个结构变成了 mapreduce(计算) + yarn(资源管理) + hdfs(存储)。此外，在2.0的时候已经支持了spark的计算框架。并且，新加入了HA(high available)模式. </p>
+<h3 id="YARN-是什么"><a href="#YARN-是什么" class="headerlink" title="YARN 是什么"></a>YARN 是什么</h3><p>YARN 的全称是 Yet Another Resource Negotiator. YARN 主要管理两个资源：CPU + Memory, 并且他的结构如下图：<br><img src="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/1_yarn.png" alt="yarn"><br>其中，资源管理是由 RM(ResourceManager) + AM(ApplicationMaster) + NM(NodeManager) 组成,如上图所示。<br>从图中我们可以看出，yarn是典型的master-slave结构。其中，RM对所有的资源进行调度和管理，而NM会对自己的资源做出隔离和管理。连接NM和RM的就是AM，AM会负责向RM申请资源，并对container中的Aplication进行跟踪和管理。</p>
+<h4 id="YARN-启动一个作业的流程"><a href="#YARN-启动一个作业的流程" class="headerlink" title="YARN 启动一个作业的流程"></a>YARN 启动一个作业的流程</h4><p><img src="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/1_yarn_work.png" alt="1_yarn_work">   </p>
+<ol>
+<li><p>首先，client 向 RM 提交 application</p>
+</li>
+<li><p>RM 收到后，会让 NM 启动一个container,同时，也会为这个NM启动一个AM。</p>
+</li>
+<li><p>AM 向 RM 注册。</p>
+</li>
+<li><p>AM 用轮询的方式向 RM 中的 resource scheduler要资源</p>
+</li>
+<li><p>AM 在拿到资源后，会联系 NM，请求启动计算任务</p>
+</li>
+<li><p>NM 会根据 AM 拿到的资源，在 container 中启动任务</p>
+</li>
+<li><p>任务会向 AM 汇报自己的 状态 和 进度，以便让AM掌握各个任务的执行状况</p>
+</li>
+<li><p>任务做完之后，AM 会向 RM 提交注销，并关闭自己</p>
+<h4 id="YARN-的调度方式"><a href="#YARN-的调度方式" class="headerlink" title="YARN 的调度方式"></a>YARN 的调度方式</h4><p>从宏观上来说，调度方式又如下三种: 集中式调度器(Monolithic scheduler)，双层调度器(Two-Level Scheduler)，状态共享调度器(Shared-State Scheduler)</p>
+</li>
+<li><p>集中式调度器(Monolithic scheduler)<br>集中式调度器只有一个中央调度器构成。其中，所有的计算资源申请，调度逻辑都会交给中央调度器。这也就直接导致了中央调度器再做高并发的情况下，会出现性能瓶颈。假如此时，有多个资源申请，中央调度器只能顺序执行</p>
+</li>
+<li><p>双层调度器(Two-Level Scheduler)<br>双层调度器(Two-Level Scheduler) 在 集中式 基础上，变为了 中央调度器 + 框架调度器。此时，中央调度器只负责资源的状态，然后按照一定的策略（FIFO, Fair, Capacity, Dominant Resouce Fair）把资源分配给 框架调度器，框架调度器在根据接收到的资源来给容器分配任务。 </p>
+</li>
+<li><p>状态共享调度器（Shared-State Scheduler）<br>状态共享调度器（Shared-State Scheduler，结构同样是 中央调度器 + 框架调度器。但，此时的 中央调度器 只负责保存集群的使用信息，不再去分配资源。而 框架调度器 会根据当前集群的使用信息来去申请资源。一旦 框架调度器 申请完资源，新的资源会更新中央调度器的信息。资源申请若是出现了竞争，会通过 事务 进行，来保证操作的原子性（见数据库中的事务）。这种类似 MVCC的乐观并发机制。缺点是调度公平性不足。</p>
+</li>
+</ol>
+<p>那么，Yarn是什么<br>Yarn 很像 双层调度器 的结构，但是有一些区别：双层调度的模式是 框架调度器主动的向 中央调度器申请资源，而 Yarn中，资源是由中央(RM) 分配给地方（NM）。不过整体的结构相似。</p>
+<h3 id="Hadoop-中的-HA-mode"><a href="#Hadoop-中的-HA-mode" class="headerlink" title="Hadoop 中的 HA mode"></a>Hadoop 中的 HA mode</h3><p>HA,也就是 High available。一般的hadoop system,结构是由 namenode + datanode组成。 但是，假如，namenode 故障了，整个集群就会无法启动，直到你重启了namenode。那这个时候，HA模式就可以解决这个问题，HA模式在 namenode + datanode 基础上，变成了 namenode（active） + namenode (standby) + datanode. 其中，namenode（active）仍然负责所有的操作，而 namenode (standby) 是作为备份。其中 namenode（active） 和 namenode (standby)为了保证数据一致，会通过一个共享存储系统，比如 zookeeper，来保证一致性。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
@@ -409,7 +481,6 @@ api: java,c, web rest
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop-and-HDFS"><span class="nav-number">1.</span> <span class="nav-text">Hadoop and HDFS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hadoop-%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">hadoop 特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-%E4%B8%8D%E9%80%82%E5%90%88%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">Hadoop 不适合：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-%E7%94%9F%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">Hadoop 生态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-%E6%A0%B8%E5%BF%83"><span class="nav-number">1.3.1.</span> <span class="nav-text">Hadoop 核心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS"><span class="nav-number">1.3.2.</span> <span class="nav-text">HDFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.3.</span> <span class="nav-text">HDFS 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NameNode"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">NameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%EF%BC%9A"><span class="nav-number">1.3.3.1.1.</span> <span class="nav-text">作用：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DataNode"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">DataNode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Secondary-NameNode"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">Secondary NameNode</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Secondary-NameNode-%E4%BD%9C%E7%94%A8"><span class="nav-number">1.3.3.3.1.</span> <span class="nav-text">Secondary NameNode 作用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Secondary-NameNode-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.3.3.2.</span> <span class="nav-text">Secondary NameNode 的工作机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hdfs-%E8%AF%BB%E5%86%99%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.4.</span> <span class="nav-text">hdfs 读写过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#hdfs-read"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">hdfs read</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hdfs-write"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">hdfs write</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS-HA"><span class="nav-number">1.4.</span> <span class="nav-text">HDFS - HA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#StandBy-Namenode-HA"><span class="nav-number">1.4.1.</span> <span class="nav-text">StandBy Namenode - HA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HA-%E4%B8%8B%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.2.</span> <span class="nav-text">HA 下的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HA-Quorum-Jouranl-Nodes"><span class="nav-number">1.4.3.</span> <span class="nav-text">HA - Quorum Jouranl Nodes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HA-%E5%85%B1%E4%BA%AB%E5%AD%98%E5%82%A8-shared-storage"><span class="nav-number">1.4.4.</span> <span class="nav-text">HA - 共享存储(shared storage)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDFS%E4%B8%AD%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.5.</span> <span class="nav-text">HDFS中的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#checkpointing"><span class="nav-number">1.5.1.</span> <span class="nav-text">checkpointing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-locality"><span class="nav-number">1.5.2.</span> <span class="nav-text">Data locality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replication"><span class="nav-number">1.5.3.</span> <span class="nav-text">Replication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rack-awareness"><span class="nav-number">1.5.4.</span> <span class="nav-text">Rack awareness</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Why-Rack-awareness"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">Why Rack awareness</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Small-file-problem"><span class="nav-number">1.6.</span> <span class="nav-text">Small file problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">常见数据格式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

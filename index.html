@@ -145,6 +145,217 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/01/leetcode%E5%B8%B8%E8%A7%81%E8%AF%AD%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/01/leetcode%E5%B8%B8%E8%A7%81%E8%AF%AD%E6%B3%95/" class="post-title-link" itemprop="url">leetcode 常用语法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-06-01 13:08:39" itemprop="dateCreated datePublished" datetime="2021-06-01T13:08:39+08:00">2021-06-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-02 16:59:09" itemprop="dateModified" datetime="2021-06-02T16:59:09+08:00">2021-06-02</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>leetcode的刷题策略按照<a target="_blank" rel="noopener" href="https://github.com/Unicorn-raya/leetcode-master">这里</a>的顺序，目前已经做到hash表。这篇主要整理目前为止遇到的java语法，同时我会对标出对应其他语言，比如c++，python中的对应语法。</p>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><h2 id="c"><a href="#c" class="headerlink" title="c++"></a>c++</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int n &#x3D; 3, m &#x3D; 4;</span><br><span class="line">int m_array &#x3D; new int[n]; &#x2F;&#x2F; 一维数组</span><br><span class="line">int m_2D_array &#x3D; new int[n][m]</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; c 中需要自己释放内存</span><br><span class="line">delete [] m_array;</span><br><span class="line">for(int i &#x3D; 0; i&lt; n; ++i) delete [] m_2D_array[i];</span><br></pre></td></tr></table></figure>
+
+<h2 id="java"><a href="#java" class="headerlink" title="java"></a>java</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int n &#x3D; 3, m &#x3D; 4;</span><br><span class="line">int[] m_array &#x3D; new int[n];</span><br><span class="line">int[][] m_2D_array &#x3D; new int[n][m];</span><br><span class="line">&#x2F;&#x2F; 由于java自带的垃圾回收，所以不需要释放内存 </span><br></pre></td></tr></table></figure>
+<p>除了这种基础的数据结构，还有封装好的库，比如c++ 中的stl, 用vector对操作更加友好，或者java中的Array</p>
+<h2 id="c-1"><a href="#c-1" class="headerlink" title="c++"></a>c++</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;vector&gt;</span><br><span class="line"></span><br><span class="line">vector&lt;int&gt; m_vector;</span><br><span class="line">&#x2F;&#x2F; 排序</span><br><span class="line">sort(m_vector.begin(), m_vector.end());</span><br><span class="line">&#x2F;&#x2F; 取数组大小</span><br><span class="line">m_vector.size()      </span><br></pre></td></tr></table></figure>
+<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><h1 id="Hash表"><a href="#Hash表" class="headerlink" title="Hash表"></a>Hash表</h1><h2 id="c-2"><a href="#c-2" class="headerlink" title="c++"></a>c++</h2><p>c++ 中有三种数据结构可以用来处理hash表的问题，除了数组，还有set（集合）和map(映射)，下表是优劣对比   </p>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合:"></a>集合:</h3><table>
+<thead>
+<tr>
+<th>集合</th>
+<th>底层实现</th>
+<th>是否有序</th>
+<th>数值是否可以重复</th>
+<th>能否更改数值</th>
+<th>查询效率</th>
+<th>增删效率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>std::set</td>
+<td>红黑树</td>
+<td>有序</td>
+<td>否</td>
+<td>否</td>
+<td>O(logn)</td>
+<td>O(logn)</td>
+</tr>
+<tr>
+<td>std::multiset</td>
+<td>红黑树</td>
+<td>有序</td>
+<td>是</td>
+<td>否</td>
+<td>O(logn)</td>
+<td>O(logn)</td>
+</tr>
+<tr>
+<td>std::unordered_set</td>
+<td>哈希表</td>
+<td>无序</td>
+<td>否</td>
+<td>否</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<p>std::unordered_set底层实现为哈希表，std::set 和std::multiset 的底层实现是红黑树，红黑树是一种平衡二叉搜索树，所以key值是有序的，但key不可以修改，改动key值会导致整棵树的错乱，所以只能删除和增加。</p>
+<table>
+<thead>
+<tr>
+<th>映射</th>
+<th>底层实现</th>
+<th>是否有序</th>
+<th>数值是否可以重复</th>
+<th>能否更改数值</th>
+<th>查询效率</th>
+<th>增删效率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>std::map</td>
+<td>红黑树</td>
+<td>key有序</td>
+<td>key不可重复</td>
+<td>key不可修改</td>
+<td>O(logn)</td>
+<td>O(logn)</td>
+</tr>
+<tr>
+<td>std::multimap</td>
+<td>红黑树</td>
+<td>key有序</td>
+<td>key可重复</td>
+<td>key不可修改</td>
+<td>O(logn)</td>
+<td>O(logn)</td>
+</tr>
+<tr>
+<td>std::unordered_map</td>
+<td>哈希表</td>
+<td>key无序</td>
+<td>key不可重复</td>
+<td>key不可修改</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+</tbody></table>
+<h3 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h3><h2 id="Java-1"><a href="#Java-1" class="headerlink" title="Java"></a>Java</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/27/kafka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/27/kafka/" class="post-title-link" itemprop="url">kafka</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-05-27 17:49:35 / Modified: 18:07:22" itemprop="dateCreated datePublished" datetime="2021-05-27T17:49:35+08:00">2021-05-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h1>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/26/hive-advanced/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1061,292 +1272,11 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39; STORED AS TEXTFILE;
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/hadoop-hdfs/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ray">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/05/08/hadoop-hdfs/" class="post-title-link" itemprop="url">hadoop-hdfs</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2021-05-08 17:08:39 / Modified: 17:33:36" itemprop="dateCreated datePublished" datetime="2021-05-08T17:08:39+08:00">2021-05-08</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Hadoop-and-HDFS"><a href="#Hadoop-and-HDFS" class="headerlink" title="Hadoop and HDFS"></a>Hadoop and HDFS</h1><h2 id="hadoop-特点"><a href="#hadoop-特点" class="headerlink" title="hadoop 特点"></a>hadoop 特点</h2><ul>
-<li>存很大的数据</li>
-<li>写一次，多次读取(不可修改，只可追加)</li>
-<li>commodity and heterogenious hardware<h2 id="Hadoop-不适合："><a href="#Hadoop-不适合：" class="headerlink" title="Hadoop 不适合："></a>Hadoop 不适合：</h2></li>
-<li>low-latency data access</li>
-<li>大量小尺寸数据</li>
-<li>multiple writers</li>
-<li>arbitary file modification(文件经常会做变动)<h2 id="Hadoop-生态"><a href="#Hadoop-生态" class="headerlink" title="Hadoop 生态"></a>Hadoop 生态</h2><h3 id="Hadoop-核心"><a href="#Hadoop-核心" class="headerlink" title="Hadoop 核心"></a>Hadoop 核心</h3></li>
-<li>HDFS</li>
-<li>MapReduce</li>
-<li>YARN<br>等等，像Pig, Hive,Spark, HBase<h3 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a>HDFS</h3>HDFS 是一个 master-slave 的文件系统(file system).他可以分布式存储数据(存储在node，也就是machine上，通常，node都是 linux machine with java)。同样的，他也支持分布式计算，以及 horizontal scalability （Vertical Scaling vs. Horizontal Scaling ?）</li>
-</ul>
-<h3 id="HDFS-结构"><a href="#HDFS-结构" class="headerlink" title="HDFS 结构"></a>HDFS 结构</h3><p><img src="/2021/05/08/hadoop-hdfs/hdfs_architecture.PNG" alt="hdfs_architecture"></p>
-<h4 id="NameNode"><a href="#NameNode" class="headerlink" title="NameNode"></a>NameNode</h4><ul>
-<li>维护和管理 DataNodes 中的blocks,且 namenode 是 master node<h5 id="作用："><a href="#作用：" class="headerlink" title="作用："></a>作用：</h5></li>
-<li>记录所有文件的元数据(metadata),matadata 是由 FsImage(filesystem namespace) 和 editlogs(all the recent modifications) 组成。</li>
-<li>记录元数据中的每次变化</li>
-<li>检测datanodes的状态</li>
-<li>记录HDFS中blocks的所有记录</li>
-<li>DataNode fails后的恢复工作   </li>
-</ul>
-<p>其中：<br>FsImage 文件用来记录数据块到文件的映射、目录或文件的结构、属性等信息，里面记录了自最后一次检查点之前 HDFS 文件系统中所有目录和文件的信息。   </p>
-<p>Edit Log 文件记录了对文件的创建、删除、重命名等操作日志，也就是自最后一次检查点之后所有针对 HDFS 文件系统的操作都会记录在 Edit Log 文件中。例如，在 HDFS 中创建一个文件， NameNode 就会在 Edit Log 中插入一条记录，同样修改文件的副本系数也会在 Edit Log 中插入一条记录。<br>注意，NameNode daemon（守护程序）需要一直跑，一旦namenode down, 集群(cluster) 也会down.</p>
-<p>简单说:<br>metadata: fs images + edit log/ written in memory<br>fs image = paths + block ids + user + group + permissions/ written in disk<br>edit log = operations/ written in disk  </p>
-<!-- ![namenode](namenode.PNG) -->
-
-<h4 id="DataNode"><a href="#DataNode" class="headerlink" title="DataNode"></a>DataNode</h4><p>真正存数据的地方,可以用来performs 读写request，以及报告状态给NameNode(heartbeat)，属于slave-node </p>
-<p>当nameNode failed, 集群就会down,没有namenode中的metadata，就无法重组blocks,为了防止这样的情况，我们加上Secondary NameNode</p>
-<h4 id="Secondary-NameNode"><a href="#Secondary-NameNode" class="headerlink" title="Secondary NameNode"></a>Secondary NameNode</h4><p>取Namenode中的metadata中的checkpoints. Secondary NameNode不是namenode的备份，且必须再另一个node上跑</p>
-<h5 id="Secondary-NameNode-作用"><a href="#Secondary-NameNode-作用" class="headerlink" title="Secondary NameNode 作用"></a>Secondary NameNode 作用</h5><ul>
-<li>performs memory intensive housekeeping   </li>
-<li>存储Fsimage 和 editlogs的备份</li>
-<li>周期性的把editlogs的改动应用到fsimages上，并刷新自身的editlogs</li>
-<li>一旦namenode down,file system metadata就可以从secondary namenode上的最新的fsimage上恢复<h5 id="Secondary-NameNode-的工作机制"><a href="#Secondary-NameNode-的工作机制" class="headerlink" title="Secondary NameNode 的工作机制"></a>Secondary NameNode 的工作机制</h5><img src="/2021/05/08/hadoop-hdfs/Secondary_Namenode.PNG" alt="Secondary_Namenode"><br>详细解释：<br>(<a target="_blank" rel="noopener" href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3082">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3082</a>)</li>
-</ul>
-<h3 id="hdfs-读写过程"><a href="#hdfs-读写过程" class="headerlink" title="hdfs 读写过程"></a>hdfs 读写过程</h3><h4 id="hdfs-read"><a href="#hdfs-read" class="headerlink" title="hdfs read"></a>hdfs read</h4><p><img src="/2021/05/08/hadoop-hdfs/hdfs_read.PNG" alt="hdfs_read"></p>
-<h4 id="hdfs-write"><a href="#hdfs-write" class="headerlink" title="hdfs write"></a>hdfs write</h4><p><img src="/2021/05/08/hadoop-hdfs/hdfs_write.PNG" alt="hdfs_write"><br><a target="_blank" rel="noopener" href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3082">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3082</a></p>
-<h2 id="HDFS-HA"><a href="#HDFS-HA" class="headerlink" title="HDFS - HA"></a>HDFS - HA</h2><p>HA 模式下，会有两个namenode。 其中只有一个namenode处于active的状态，另一个处于standby状态。这种机制实现namenode的双机热备高可用功能。</p>
-<h3 id="StandBy-Namenode-HA"><a href="#StandBy-Namenode-HA" class="headerlink" title="StandBy Namenode - HA"></a>StandBy Namenode - HA</h3><p>standby namenode 会时刻同步active namenode的元数据。一旦active的namenode down,standby 会自动或者手动变为active的状态。自动切换的实现，可以通过zookeeper的仲裁来实现(kafka集群结构也同样依赖zookeeper)。zookeeper会检测两个namenode的状态，来选举active的namenode.此外，active 和 standby 的同步，是通过journal nodes来实现的。 </p>
-<h3 id="HA-下的结构"><a href="#HA-下的结构" class="headerlink" title="HA 下的结构"></a>HA 下的结构</h3><p><img src="/2021/05/08/hadoop-hdfs/HA.PNG" alt="HA"><br>机制：（<a target="_blank" rel="noopener" href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3079%EF%BC%89">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3079）</a><br>（ha下，active namenode 和 standby 必须有一样的metadata）    </p>
-<p>ZooKeeper（ZK）集群作为一个高可靠系统，能够为集群协作数据提供监控，并将数据的更改随时反馈给客户端。HDFS 的热备功能依赖 ZK 提供的两个特性：错误监测、活动节点选举。HDFS 通过 ZK 实现高可用的机制如下。</p>
-<p>每个 NameNode 都会在 ZK 中注册并且持久化一个 session 标识，一旦 NameNode 失效了，那么 session 也将过期，而 ZK 也会通知其他的 NameNode 发起一个失败切换。ZK 提供了一个简单的机制来保证只有一个 NameNode 是活动的，那就是独占锁，如果当前的活动 NameNode 失效了，那么另一个 NameNode 将获取 ZK 中的独占锁，表明自己是活动的节点。</p>
-<p>ZKFailoverController（ZKFC）是 ZK 集群的客户端，用来监控 NN 的状态信息，每个运行 NameNode 的节点必须要运行一个 ZKFC。ZKFC 提供以下功能：</p>
-<ul>
-<li>健康检查，ZKFC 定期对本地的 NN 发起 health-check 的命令，如果 NN 正确返回，那么 NN 被认为是 OK 的，否则被认为是失效节点；</li>
-<li>session管理，当本地 NN 是健康的时候，ZKFC 将会在 ZK 中持有一个 session，如果本地 NN 又正好是 Active，那么 ZKFC 将持有一个短暂的节点作为锁，一旦本地 NN 失效了，那么这个节点就会被自动删除；</li>
-<li>基础选举，如果本地 NN 是健康的，并且 ZKFC 发现没有其他 NN 持有这个独占锁，那么它将试图去获取该锁，一旦成功，那么它就开始执行 Failover，然后变成 Active 状态的 NN 节点；Failover 的过程分两步，首先对之前的 NameNode 执行隔离（如果需要的话），然后将本地 NameNode 切换到 Active 状态。</li>
-</ul>
-<h3 id="HA-Quorum-Jouranl-Nodes"><a href="#HA-Quorum-Jouranl-Nodes" class="headerlink" title="HA - Quorum Jouranl Nodes"></a>HA - Quorum Jouranl Nodes</h3><p>quorum jouranl nodes，其实就是JournalNode集群。这里用来同步两个namenode中的元数据，同步方式如图↓<br><img src="/2021/05/08/hadoop-hdfs/jn.PNG" alt="jn"><br>JournalNode 集群可以几乎实时的去 NameNode 上拉取元数据，然后保存元数据到 JournalNode 集群；同时，处于 standby 状态的 NameNode 也会实时的去 JournalNode 集群上同步 JNS 数据，通过这种方式，就实现了两个 NameNode 之间的数据同步。</p>
-<p>那么，JournalNode 集群内部是如何实现的呢？</p>
-<p>两个 NameNode 为了数据同步，会通过一组称作 JournalNodes 的独立进程进行相互通信。当 Active 状态的 NameNode 元数据有任何修改时，会告知大部分的 JournalNodes 进程。同时，Standby 状态的 NameNode 也会读取 JNs 中的变更信息，并且一直监控 EditLog （事务日志）的变化，并把变化应用于自己的命名空间。Standby 可以确保在集群出错时，元数据状态已经完全同步了。<br><img src="/2021/05/08/hadoop-hdfs/qjm.PNG" alt="qjm"></p>
-<p>jn的集群机制： (<a target="_blank" rel="noopener" href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3079">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=144#/detail/pc?id=3079</a>)</p>
-<h3 id="HA-共享存储-shared-storage"><a href="#HA-共享存储-shared-storage" class="headerlink" title="HA - 共享存储(shared storage)"></a>HA - 共享存储(shared storage)</h3><p><img src="/2021/05/08/hadoop-hdfs/ha-share-storage.PNG" alt="ha-share-storage"><br>The StandbyNode and the active NameNode keep in sync with each other by using a shared storage device. The active NameNode logs the record of any modification done in its namespace to an EditLog present in this shared storage. The StandbyNode reads the changes made to the EditLogs in this shared storage and applies it to its own namespace.<br>Now, in case of failover, the StandbyNode updates its metadata information using the EditLogs in the shared storage at first. Then, it takes the responsibility of the Active NameNode. This makes the current namespace state synchronized with the state before failover.<br>The administrator must configure at least one fencing method to avoid a split-brain scenario.<br>The system may employ a range of fencing mechanisms. It may include killing of the NameNode’s process and revoking its access to the shared storage directory.<br>As a last resort, we can fence the previously active NameNode with a technique known as STONITH, or “shoot the other node in the head”. STONITH uses a specialized power distribution unit to forcibly power down the NameNode machine。（待整合）</p>
-<h2 id="HDFS中的概念"><a href="#HDFS中的概念" class="headerlink" title="HDFS中的概念"></a>HDFS中的概念</h2><h3 id="checkpointing"><a href="#checkpointing" class="headerlink" title="checkpointing"></a>checkpointing</h3><p><img src="/2021/05/08/hadoop-hdfs/checkpoints.PNG" alt="checkpoints"></p>
-<h3 id="Data-locality"><a href="#Data-locality" class="headerlink" title="Data locality"></a>Data locality</h3><p><img src="/2021/05/08/hadoop-hdfs/Data_locality.PNG" alt="Data_locality"></p>
-<h3 id="Replication"><a href="#Replication" class="headerlink" title="Replication"></a>Replication</h3><p><img src="/2021/05/08/hadoop-hdfs/replication.PNG" alt="replication"></p>
-<h3 id="Rack-awareness"><a href="#Rack-awareness" class="headerlink" title="Rack awareness"></a>Rack awareness</h3><p><img src="/2021/05/08/hadoop-hdfs/Rack_awareness.PNG" alt="Rack-awareness"></p>
-<h4 id="Why-Rack-awareness"><a href="#Why-Rack-awareness" class="headerlink" title="Why Rack awareness"></a>Why Rack awareness</h4><ul>
-<li>减少延迟</li>
-</ul>
-<ol>
-<li>读：blocks from multiple racks</li>
-<li>写：to 2 racks instead of 3 per block</li>
-</ol>
-<ul>
-<li>容错<br>Never put your eggs in the same basket<br><img src="/2021/05/08/hadoop-hdfs/yra.PNG" alt="yra"> </li>
-</ul>
-<h2 id="Small-file-problem"><a href="#Small-file-problem" class="headerlink" title="Small file problem"></a>Small file problem</h2><p>特别小的文件仍然会占用128kb block。这样会造成浪费</p>
-<!-- 
-## HDFS 的 access,cli 以及debug
-### Access 
-cli： hadoop cli
-gui: ambari,hue
-api: java,c, web rest
-
-### Cli:
-##### DFS
-##### DFSADMIN
-##### Balance
-##### FSCK
-
-### HDFS debug -->
-
-<h2 id="常见数据格式"><a href="#常见数据格式" class="headerlink" title="常见数据格式"></a>常见数据格式</h2><table>
-<thead>
-<tr>
-<th>Format</th>
-<th>feature</th>
-<th>for writes</th>
-<th>for reads</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Text</td>
-<td>JSON, CSV, XML, TEXT <br>Data is stored in bulky way<br> Not efficient for querying and analytics <br>Limited compression capabilities</td>
-<td>Fast, but inefficient for storage</td>
-<td>Easy to read and parse; Slow for reads</td>
-</tr>
-<tr>
-<td>Sequence</td>
-<td>Provides persistent data structure for binary key-value pairs<br>Row-based<br>Commonly used to transfer Hadoop MR-jobs<br>Can be used as archive to pack small files<br>Not efficient for querying and analytics<br>Limited compression capabilities<br>Support splitting even when data is compressed<br></td>
-<td>Useful when data needs to be shared between MR job</td>
-<td>Easy to read and parse</td>
-</tr>
-<tr>
-<td>PARQUET</td>
-<td>Column-oriented binary file format <br>Uses record shredding and assembly algorithm <br>Each data file contains the values for a set of rows<br>Efficient for I/O in case specific columns needs to be queried<br>Schema is moved to the footer<br>Integrated compression and indexes</td>
-<td>Additional parsing needs to be done</td>
-<td>Easy to read and parse<br>Efficient when columns needs to be queried<br>Useful in scenarios when schema evolving by adding columns<br></td>
-</tr>
-<tr>
-<td>AVRO</td>
-<td>Widely used as a serialization platform<br>Row-based<br>Offers compact and fast compression format<br>Schema is stored in the file, but is segregated from data<br>Splittable<br>Support schema evolution<br></td>
-<td>Works as serialization framework, handle schema evolution</td>
-<td>Easy to read and parse</td>
-</tr>
-<tr>
-<td>ORC</td>
-<td>Considered evolution of RCFile<br>Stores collection of rows within the collection<br>The row data is stored in columnar format<br>Introduces a lightweight indexing that enables skipping of irrelevant blocks of rows<br>Splittable: allow parallel processing of row collections<br>It comes with basic statistics for columns<br>Schema is segregated into footer<br></td>
-<td>Additional parsing needs to be done</td>
-<td>Easy to read and parse<br>Efficient when columns needs to be queried</td>
-</tr>
-</tbody></table>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ray">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/" class="post-title-link" itemprop="url">Hadoop 简介</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-04-29 17:47:13" itemprop="dateCreated datePublished" datetime="2021-04-29T17:47:13+08:00">2021-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-04-30 12:10:45" itemprop="dateModified" datetime="2021-04-30T12:10:45+08:00">2021-04-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Hadoop-what"><a href="#Hadoop-what" class="headerlink" title="Hadoop, what?"></a>Hadoop, what?</h2><p>Hadoop 是一个分布式系统基础架构。这篇聊聊他的进化历史，从1.0 到 2.0 </p>
-<h2 id="Hadoop-1-0"><a href="#Hadoop-1-0" class="headerlink" title="Hadoop 1.0"></a>Hadoop 1.0</h2><p>Hadoop 1.0 是最早hadoop的版本，主要由两个部分构成，HDFS(存储) + MapReduce(计算)</p>
-<h3 id="HDFS-（存储）"><a href="#HDFS-（存储）" class="headerlink" title="HDFS （存储）"></a>HDFS （存储）</h3><p>hdfs,全称是hadoop distribute file system,如名字所言: 分布式(Distribute)，文件系统(file system)。就是以分布式的形式存储文件。所谓分布式存储，就是将文件分割成若干个小文件，并分散存储在不同服务器上。不过现在大家都用云存储了，hdfs主要是入门基础。不用太深，图一乐。<br>HDFS 的结构主要由 NameNode(metadata) + DataNode(data) 组成。<br>NameNode 是存储元数据的节点，元数据指的是文件的block位置，size 等。 DataNode 是真正存储数据的位置，通常，一个数据会被分割成几分，且每一份数据会复制3份(为什么是3份)来保证数据不会被丢失。在1.0的版本中，namenode同样负责job的调度，等等，这些都在2.0里丢给了yarn。</p>
-<h3 id="MapReduce（计算）"><a href="#MapReduce（计算）" class="headerlink" title="MapReduce（计算）"></a>MapReduce（计算）</h3><p>在hadoop生态里，最早的是mapreduce,再往后，就是spark，以及tez。<br>MapReduce 是一种计算框架。字面意思，就是把计算分为map 和 reduce。 map中，通常是数据的转换。而reduce，更多的是聚合。比如，现在统计一组数据中男生，女生的个数，处理逻辑如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name1 -&gt; man -&gt; 1</span><br><span class="line">name2 -&gt; women -&gt; 1</span><br><span class="line">name3 -&gt; man -&gt; 1</span><br><span class="line">name4 -&gt; women -&gt; 1</span><br></pre></td></tr></table></figure>
-<p>在这一步，就是map的过程，而将这一步统计在一起</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">man -&gt; 2</span><br><span class="line">women -&gt; 2</span><br></pre></td></tr></table></figure>
-<p>这就属于reduce的过程。而这种计算过程，也对分布式计算非常友好。因此，在最开始的hadoop 1.0 中，结构就是<br>mapreduce(计算) + hdfs（存储）</p>
-<h3 id="Hadoop-1-0的缺点"><a href="#Hadoop-1-0的缺点" class="headerlink" title="Hadoop 1.0的缺点"></a>Hadoop 1.0的缺点</h3><p>最早开始，hadoop 是 mapreduce + hdfs，已经没人用了。一是这样的计算方式，在极大数据的时候，中间的缓存太大。此外，由于最开始，hadoop的调度方式是顺序结构。也就是FIFO，导致了整个计算过程非常缓慢。而且，整个系统没有热备份(也就是实时备份)，已经无法适应大规模计算了，所以1.0的结构已经被彻底抛弃。</p>
-<h2 id="Hadoop-2-0"><a href="#Hadoop-2-0" class="headerlink" title="Hadoop 2.0"></a>Hadoop 2.0</h2><p>Hadoop 2.0的时候，整个结构变成了 mapreduce(计算) + yarn(资源管理) + hdfs(存储)。此外，在2.0的时候已经支持了spark的计算框架。并且，新加入了HA(high available)模式. </p>
-<h3 id="YARN-是什么"><a href="#YARN-是什么" class="headerlink" title="YARN 是什么"></a>YARN 是什么</h3><p>YARN 的全称是 Yet Another Resource Negotiator. YARN 主要管理两个资源：CPU + Memory, 并且他的结构如下图：<br><img src="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/1_yarn.png" alt="yarn"><br>其中，资源管理是由 RM(ResourceManager) + AM(ApplicationMaster) + NM(NodeManager) 组成,如上图所示。<br>从图中我们可以看出，yarn是典型的master-slave结构。其中，RM对所有的资源进行调度和管理，而NM会对自己的资源做出隔离和管理。连接NM和RM的就是AM，AM会负责向RM申请资源，并对container中的Aplication进行跟踪和管理。</p>
-<h4 id="YARN-启动一个作业的流程"><a href="#YARN-启动一个作业的流程" class="headerlink" title="YARN 启动一个作业的流程"></a>YARN 启动一个作业的流程</h4><p><img src="/2021/04/29/Hadoop-%E7%AE%80%E4%BB%8B/1_yarn_work.png" alt="1_yarn_work">   </p>
-<ol>
-<li><p>首先，client 向 RM 提交 application</p>
-</li>
-<li><p>RM 收到后，会让 NM 启动一个container,同时，也会为这个NM启动一个AM。</p>
-</li>
-<li><p>AM 向 RM 注册。</p>
-</li>
-<li><p>AM 用轮询的方式向 RM 中的 resource scheduler要资源</p>
-</li>
-<li><p>AM 在拿到资源后，会联系 NM，请求启动计算任务</p>
-</li>
-<li><p>NM 会根据 AM 拿到的资源，在 container 中启动任务</p>
-</li>
-<li><p>任务会向 AM 汇报自己的 状态 和 进度，以便让AM掌握各个任务的执行状况</p>
-</li>
-<li><p>任务做完之后，AM 会向 RM 提交注销，并关闭自己</p>
-<h4 id="YARN-的调度方式"><a href="#YARN-的调度方式" class="headerlink" title="YARN 的调度方式"></a>YARN 的调度方式</h4><p>从宏观上来说，调度方式又如下三种: 集中式调度器(Monolithic scheduler)，双层调度器(Two-Level Scheduler)，状态共享调度器(Shared-State Scheduler)</p>
-</li>
-<li><p>集中式调度器(Monolithic scheduler)<br>集中式调度器只有一个中央调度器构成。其中，所有的计算资源申请，调度逻辑都会交给中央调度器。这也就直接导致了中央调度器再做高并发的情况下，会出现性能瓶颈。假如此时，有多个资源申请，中央调度器只能顺序执行</p>
-</li>
-<li><p>双层调度器(Two-Level Scheduler)<br>双层调度器(Two-Level Scheduler) 在 集中式 基础上，变为了 中央调度器 + 框架调度器。此时，中央调度器只负责资源的状态，然后按照一定的策略（FIFO, Fair, Capacity, Dominant Resouce Fair）把资源分配给 框架调度器，框架调度器在根据接收到的资源来给容器分配任务。 </p>
-</li>
-<li><p>状态共享调度器（Shared-State Scheduler）<br>状态共享调度器（Shared-State Scheduler，结构同样是 中央调度器 + 框架调度器。但，此时的 中央调度器 只负责保存集群的使用信息，不再去分配资源。而 框架调度器 会根据当前集群的使用信息来去申请资源。一旦 框架调度器 申请完资源，新的资源会更新中央调度器的信息。资源申请若是出现了竞争，会通过 事务 进行，来保证操作的原子性（见数据库中的事务）。这种类似 MVCC的乐观并发机制。缺点是调度公平性不足。</p>
-</li>
-</ol>
-<p>那么，Yarn是什么<br>Yarn 很像 双层调度器 的结构，但是有一些区别：双层调度的模式是 框架调度器主动的向 中央调度器申请资源，而 Yarn中，资源是由中央(RM) 分配给地方（NM）。不过整体的结构相似。</p>
-<h3 id="Hadoop-中的-HA-mode"><a href="#Hadoop-中的-HA-mode" class="headerlink" title="Hadoop 中的 HA mode"></a>Hadoop 中的 HA mode</h3><p>HA,也就是 High available。一般的hadoop system,结构是由 namenode + datanode组成。 但是，假如，namenode 故障了，整个集群就会无法启动，直到你重启了namenode。那这个时候，HA模式就可以解决这个问题，HA模式在 namenode + datanode 基础上，变成了 namenode（active） + namenode (standby) + datanode. 其中，namenode（active）仍然负责所有的操作，而 namenode (standby) 是作为备份。其中 namenode（active） 和 namenode (standby)为了保证数据一致，会通过一个共享存储系统，比如 zookeeper，来保证一致性。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -1411,12 +1341,12 @@ api: java,c, web rest
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
