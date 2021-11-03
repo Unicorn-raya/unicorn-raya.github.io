@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-11-03 16:08:39 / Modified: 18:14:11" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
+              <time title="Created: 2021-11-03 16:08:39 / Modified: 18:22:56" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
             </span>
 
           
@@ -211,12 +211,8 @@
 <td>ang</td>
 <td>20</td>
 </tr>
-<tr>
-<td>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</td>
-<td></td>
-<td></td>
-</tr>
 </tbody></table>
+<p>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
 <p>这样，上述的方法就可以读出正确的数据了。</p>
 <h2 id="Case-2-数据含有回车"><a href="#Case-2-数据含有回车" class="headerlink" title="Case 2 数据含有回车"></a>Case 2 数据含有回车</h2><p>还有一种特殊情况，数据是这样的</p>
@@ -240,12 +236,8 @@
 <td>18</td>
 <td>61</td>
 </tr>
-<tr>
-<td>在这种情况下，我们需要用如下的方法:</td>
-<td></td>
-<td></td>
-</tr>
 </tbody></table>
+<p>在这种情况下，我们需要用如下的方法:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;multiline&quot;, True).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
 <h2 id="一个通用解"><a href="#一个通用解" class="headerlink" title="一个通用解"></a>一个通用解</h2><p>如上两种方法可以解决绝大多数的特殊字符问题。然而，当数据本身就不是正规的csv文件时候，以上的两种方法仍然会失效。比如，数据是从一些crm系统导出，或者数据存储的编码类型可能会是gbk但是却存储成utf-8的情况(这里用excel打开会出现各种???,但是用<a target="_blank" rel="noopener" href="https://notepad-plus-plus.org/">notepad++</a>打开就能看到文件的真实样子)这时候，spark就会无能为力。<br>为了保证有一个统一的方案，这里推荐安装 <a target="_blank" rel="noopener" href="https://arrow.apache.org/docs/python/index.html">pyarrow</a> 以及<a target="_blank" rel="noopener" href="https://pandas.pydata.org/">pandas</a> 来读取本地的数据，然后将pandas的dataframe来转成spark的dataframe.<br>经过一些踩坑的处理，我得到最终的本地通用解是以下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.sql import SparkSession,DataFrame</span><br><span class="line">from pyspark.sql import functions as f</span><br><span class="line">from pyspark.sql.functions import when,udf,concat_ws,col,lit,concat,substring,regexp_replace,date_format,expr</span><br><span class="line">from pyspark.sql.types import DoubleType,IntegerType</span><br><span class="line">import pandas as pd</span><br><span class="line">pd.set_option(&quot;max_columns&quot;,10000)</span><br><span class="line">spark &#x3D; SparkSession.builder.master(&#39;local[*]&#39;).appName(&#39;sample&#39;).config(&quot;spark.executor.memory&quot;, &quot;6g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.driver.memory&quot;, &quot;5g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.enabled&quot;,True)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.size&quot;,&quot;10g&quot;).getOrCreate()</span><br><span class="line"></span><br><span class="line">spark.sparkContext.setLogLevel(&quot;ERROR&quot;) </span><br><span class="line">spark.conf.set(&quot;spark.sql.execution.arrow.pyspark.enabled&quot;, &quot;true&quot;)</span><br><span class="line"></span><br><span class="line">def load_csv(spark:SparkSession, path:str, used_column:list &#x3D; None) -&gt; DataFrame:</span><br><span class="line">    if used_column is None:</span><br><span class="line">        used_column &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;header&quot;,True).option(&quot;delimiter&quot;,&quot;,&quot;).load(path).columns</span><br><span class="line">    &quot;&quot;&quot;read csv to spark df&quot;&quot;&quot;</span><br><span class="line">    pd_df &#x3D; pd.read_csv(path,dtype&#x3D;str)[used_column]</span><br><span class="line">    pd_df &#x3D; pd_df.where((pd.notnull(pd_df)), None)</span><br><span class="line">    df &#x3D; spark.createDataFrame(pd_df.astype(str)).replace(&#39;None&#39;,None).replace(&#39;&#39;,None)</span><br><span class="line">    return df</span><br><span class="line">data &#x3D; load_csv(spark,LOCAL_FILE_PATH)</span><br></pre></td></tr></table></figure>
