@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-11-03 16:08:39 / Modified: 18:01:26" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
+              <time title="Created: 2021-11-03 16:08:39 / Modified: 18:09:46" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
             </span>
 
           
@@ -192,7 +192,7 @@
 <p>然而当数据变成以下情况时候，这种方法就失效了。</p>
 <h2 id="Case-1-数据本身就有逗号"><a href="#Case-1-数据本身就有逗号" class="headerlink" title="Case 1 数据本身就有逗号"></a>Case 1 数据本身就有逗号</h2><p>同样是上述的数据，但是数据变成如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">&quot;xiao,ming&quot;,18,61</span><br><span class="line">&quot;xiaozh,ang&quot;,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>此时仍然用上面的方法，数据会读成这样：<br>|name | age| score<br>|-|-|-<br>|xiao|ming|18<br>|xiaozh|ang|20<br>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</p>
+<p>此时仍然用上面的方法，数据会读成这样：<br>|name | age| score|<br>| —— | —— | —— |<br>|xiao|ming|18|<br>|xiaozh|ang|20|<br>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
 <p>这样，上述的方法就可以读出正确的数据了。</p>
 <h2 id="Case-2-数据含有回车"><a href="#Case-2-数据含有回车" class="headerlink" title="Case 2 数据含有回车"></a>Case 2 数据含有回车</h2><p>还有一种特殊情况，数据是这样的</p>
