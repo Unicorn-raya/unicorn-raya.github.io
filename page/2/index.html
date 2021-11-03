@@ -145,7 +145,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/spark-read-file/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/spark/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -159,7 +159,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/05/10/spark-read-file/" class="post-title-link" itemprop="url">spark</a>
+            <a href="/2021/05/10/spark/" class="post-title-link" itemprop="url">spark</a>
         </h2>
 
         <div class="post-meta">
@@ -176,7 +176,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-11-03 17:14:05" itemprop="dateModified" datetime="2021-11-03T17:14:05+08:00">2021-11-03</time>
+                <time title="Modified: 2021-05-24 18:03:17" itemprop="dateModified" datetime="2021-05-24T18:03:17+08:00">2021-05-24</time>
               </span>
 
           
@@ -190,45 +190,201 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="如何用spark读取含有特殊字符的本地文件"><a href="#如何用spark读取含有特殊字符的本地文件" class="headerlink" title="如何用spark读取含有特殊字符的本地文件"></a>如何用spark读取含有特殊字符的本地文件</h1><p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
-<p>比如一个csv文件，他的数据是这样的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">xiaoming,18,61</span><br><span class="line">xiaozhang,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>这种情况下往往我们都会用最常见的读取csv的操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;delimiter&quot;,&quot;,&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
-<p>然而当数据变成以下情况时候，这种方法就失效了。</p>
-<h2 id="Case-1-数据本身就有逗号"><a href="#Case-1-数据本身就有逗号" class="headerlink" title="Case 1 数据本身就有逗号"></a>Case 1 数据本身就有逗号</h2><p>同样是上述的数据，但是数据变成如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">&quot;xiao,ming&quot;,18,61</span><br><span class="line">&quot;xiaozh,ang&quot;,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>此时仍然用上面的方法，数据会读成这样：<br>|name | age| score<br>|-|-|-<br>|xiao|ming|18<br>|xiaozh|ang|20<br>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
-<p>这样，上述的方法就可以读出正确的数据了。</p>
-<h2 id="Case-2-数据含有回车"><a href="#Case-2-数据含有回车" class="headerlink" title="Case 2 数据含有回车"></a>Case 2 数据含有回车</h2><p>还有一种特殊情况，数据是这样的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">&quot;xiao,m</span><br><span class="line">ing&quot;,18,61</span><br><span class="line">&quot;xiaozh,a</span><br><span class="line">ng&quot;,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>这种情况上述的方法会失效，上面的两种读取数据的方法都会得到以下的结果</p>
-<table>
-<thead>
-<tr>
-<th>name</th>
-<th>age</th>
-<th>score</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>xiao,m</td>
-<td>null</td>
-<td>null</td>
-</tr>
-<tr>
-<td>ing</td>
-<td>18</td>
-<td>61</td>
-</tr>
-</tbody></table>
-<p>在这种情况下，我们需要用如下的方法:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;multiline&quot;, True).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
-<h2 id="一个通用解"><a href="#一个通用解" class="headerlink" title="一个通用解"></a>一个通用解</h2><p>如上两种方法可以解决绝大多数的特殊字符问题。然而，当数据本身就不是正规的csv文件时候，以上的两种方法仍然会失效。比如，数据是从一些crm系统导出，或者数据存储的编码类型可能会是gbk但是却存储成utf-8的情况(这里用excel打开会出现各种???,但是用<a target="_blank" rel="noopener" href="https://notepad-plus-plus.org/">notepad++</a>打开就能看到文件的真实样子)这时候，spark就会无能为力。<br>为了保证有一个统一的方案，这里推荐安装 <a target="_blank" rel="noopener" href="https://arrow.apache.org/docs/python/index.html">pyarrow</a> 以及<a target="_blank" rel="noopener" href="https://pandas.pydata.org/">pandas</a> 来读取本地的数据，然后将pandas的dataframe来转成spark的dataframe.<br>经过一些踩坑的处理，我得到最终的本地通用解是以下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.sql import SparkSession,DataFrame</span><br><span class="line">from pyspark.sql import functions as f</span><br><span class="line">from pyspark.sql.functions import when,udf,concat_ws,col,lit,concat,substring,regexp_replace,date_format,expr</span><br><span class="line">from pyspark.sql.types import DoubleType,IntegerType</span><br><span class="line">import pandas as pd</span><br><span class="line">pd.set_option(&quot;max_columns&quot;,10000)</span><br><span class="line">spark &#x3D; SparkSession.builder.master(&#39;local[*]&#39;).appName(&#39;sample&#39;).config(&quot;spark.executor.memory&quot;, &quot;6g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.driver.memory&quot;, &quot;5g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.enabled&quot;,True)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.size&quot;,&quot;10g&quot;).getOrCreate()</span><br><span class="line"></span><br><span class="line">spark.sparkContext.setLogLevel(&quot;ERROR&quot;) </span><br><span class="line">spark.conf.set(&quot;spark.sql.execution.arrow.pyspark.enabled&quot;, &quot;true&quot;)</span><br><span class="line"></span><br><span class="line">def load_csv(spark:SparkSession, path:str, used_column:list &#x3D; None) -&gt; DataFrame:</span><br><span class="line">    if used_column is None:</span><br><span class="line">        used_column &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;header&quot;,True).option(&quot;delimiter&quot;,&quot;,&quot;).load(path).columns</span><br><span class="line">    &quot;&quot;&quot;read csv to spark df&quot;&quot;&quot;</span><br><span class="line">    pd_df &#x3D; pd.read_csv(path,dtype&#x3D;str)[used_column]</span><br><span class="line">    pd_df &#x3D; pd_df.where((pd.notnull(pd_df)), None)</span><br><span class="line">    df &#x3D; spark.createDataFrame(pd_df.astype(str)).replace(&#39;None&#39;,None).replace(&#39;&#39;,None)</span><br><span class="line">    return df</span><br><span class="line">data &#x3D; load_csv(spark,LOCAL_FILE_PATH)</span><br></pre></td></tr></table></figure>
-<p>在用pyarrow的支持下，pandas的dataframe转spark的dataframe会快非常多。其中推荐首先选出需要的column,然后将列转到函数变量，而不是全量加载。此外函数内部同样处理了空值的情况，将None做了额外的处理。否则数据中的空值在pandas中会处理成NaN传递到spark的dataframe中，这种情况会导致df.isNull()/df.isNotNull()判断失效。</p>
-<h3 id="安装pyarrow的小坑"><a href="#安装pyarrow的小坑" class="headerlink" title="安装pyarrow的小坑"></a>安装pyarrow的小坑</h3><p>Q:执行安装命令后没有反应<br>A: 需要安装如下<a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=48145">依赖</a>，假如你的本地装了visual studio，本地会有一个vc2015-2019的依赖，这个依赖会和这两个依赖冲突，需要先卸载visual studio的依赖，再安装这个。</p>
+          <h1 id="Spark-简介"><a href="#Spark-简介" class="headerlink" title="Spark 简介"></a>Spark 简介</h1><h2 id="Spark-what"><a href="#Spark-what" class="headerlink" title="Spark, what?"></a>Spark, what?</h2><p>Spark 是一个用于大数据的分布式计算框架</p>
+<h2 id="Why-the-spark"><a href="#Why-the-spark" class="headerlink" title="Why the spark"></a>Why the spark</h2><p>首先，MapReduce 可以处理 one-pass 计算，但是更加复杂的就不行，比如图计算，机器学习。交互性更强的ad-hoc queries，也不能做到。还有像流数据的处理，也不可能。</p>
+<h2 id="Spark-的结构和成员"><a href="#Spark-的结构和成员" class="headerlink" title="Spark 的结构和成员"></a>Spark 的结构和成员</h2><ul>
+<li>Master node</li>
+<li>Cluster Manager</li>
+<li>Worker Node<br><img src="/2021/05/10/spark/spark-a.PNG" alt="spark-a"></li>
+</ul>
+<h2 id="Resilient-Distributed-Dataset-RDD"><a href="#Resilient-Distributed-Dataset-RDD" class="headerlink" title="Resilient Distributed Dataset (RDD)"></a>Resilient Distributed Dataset (RDD)</h2><ul>
+<li>RDD 是存数据的位置</li>
+<li>spark中的基础数据类型<ol>
+<li>并行(parallel)</li>
+<li>容错(resilient)</li>
+</ol>
+</li>
+</ul>
+<h3 id="RDD-特点"><a href="#RDD-特点" class="headerlink" title="RDD 特点"></a>RDD 特点</h3><ul>
+<li>在内存中计算(In memory computation)</li>
+<li>分区(Partitioning)</li>
+<li>容错(Fault tolerance)</li>
+<li>不可变(Immutability)</li>
+<li>持久性(Persistence)</li>
+<li>Coarse-grained operations</li>
+<li>Location-stickiness</li>
+</ul>
+<h3 id="RDD-创建-Creation"><a href="#RDD-创建-Creation" class="headerlink" title="RDD 创建(Creation)"></a>RDD 创建(Creation)</h3><ul>
+<li>在driver program中，并行已在的集合</li>
+<li>引用外部存储的数据,像HDFS,HBASE,默认下，spark对每个block中的文件做一个partition</li>
+</ul>
+<h3 id="RDD-算子-Operation"><a href="#RDD-算子-Operation" class="headerlink" title="RDD 算子(Operation)"></a>RDD 算子(Operation)</h3><h4 id="Transformations"><a href="#Transformations" class="headerlink" title="Transformations"></a>Transformations</h4><p>function, 一个rdd进，一到多个rdd出。不会触发计算。</p>
+<h5 id="宽窄依赖-Narrow-and-wide-Transformations"><a href="#宽窄依赖-Narrow-and-wide-Transformations" class="headerlink" title="宽窄依赖( Narrow and wide Transformations)"></a>宽窄依赖( Narrow and wide Transformations)</h5><p>narrow没有shuffle, 操作: map,flatMap,filter,sample<br>wide有shuffle,比如softByKey, reduceByKey,groupByKey,join<br><img src="/2021/05/10/spark/narrow-wude.PNG" alt="narrow-wide"></p>
+<h4 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h4><p>rdd的算子，输出是非rdd的value.会触发spark的计算.<br>以下都是action的算子: collect,take,reduce,forEach,sample,count,save   </p>
+<h2 id="惰性计算-lazy-Evaluation"><a href="#惰性计算-lazy-Evaluation" class="headerlink" title="惰性计算(lazy Evaluation)"></a>惰性计算(lazy Evaluation)</h2><p>目的就是最小化计算机的工作，也就是延迟求值或者最小化求值。除了提升性能外，还可以构造一个无限的数据模型<br>eg:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">li &#x3D; [lambda :x for x in range(10)]</span><br><span class="line">res &#x3D; li[0]()</span><br><span class="line">print(res)</span><br><span class="line">#输出：9</span><br></pre></td></tr></table></figure>
+<p>原因: 由于编程语言延迟求值的特性，在使用延迟求值的时候，表达式不在它被绑定到变量之后就立即求值，而是在该值被取用的时候求值，<br>当调用li<a href>0</a> 函数时，x的值已经是9了，所以输出的是9<br>怎么改成从0到9呢？   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">li2 &#x3D; [lambda x&#x3D;x:x for x in range(10)]</span><br><span class="line">res &#x3D; li2[0]()</span><br><span class="line"></span><br><span class="line">print(res)</span><br><span class="line">for i in li2:</span><br><span class="line">    print(i(), end&#x3D;&quot; &quot;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="共享变量-shared-variable"><a href="#共享变量-shared-variable" class="headerlink" title="共享变量(shared variable)"></a>共享变量(shared variable)</h2><h3 id="广播变量-broadcast-variable"><a href="#广播变量-broadcast-variable" class="headerlink" title="广播变量 (broadcast variable)"></a>广播变量 (broadcast variable)</h3><p>广播变量类似MapReduce中的DistributeFile, 通常是一个小表。在drive中创建，一旦创建后，表会在整个集群中广播，能让所有正在运行的计算任务以只读的方式访问。支持各种数据类型。   </p>
+<h4 id="广播变量在spark中的传播方法"><a href="#广播变量在spark中的传播方法" class="headerlink" title="广播变量在spark中的传播方法"></a>广播变量在spark中的传播方法</h4><p>为了保证所有的节点都能接受到driver的变量，我们不能直接去连接driver，这会导致driver会负载，这里，executor 使用的是http连接去拉取数据，类似点对点传输。<br>Spark中，driver会将已序列化的数据分成小块，然后再将数据存储在自己的blockmanager中，当executor开始运行的时候，每个executor首先从自己的内部块管理器中取得广播变量。如果以前广播过，那么直接取。假如没有，executor会从driver或者其他的executor中拉数据块。一旦拉到数据块，就会放到自己的blockmanager中。供自己和其他拉取的executor使用。这样，就很好防止的driver单点的问题。<br><img src="/2021/05/10/spark/boardcast.PNG" alt="boardcast"></p>
+<h4 id="广播变量的优点"><a href="#广播变量的优点" class="headerlink" title="广播变量的优点"></a>广播变量的优点</h4><p>一定数据量范围内，避免shuffle，使得计算尽可能的本地运行。Spark的Map端的操作，就是用广播变量来实现的</p>
+<h3 id="累加器-Accumulator"><a href="#累加器-Accumulator" class="headerlink" title="累加器(Accumulator)"></a>累加器(Accumulator)</h3><p>一个只能累加的共享变量，初始化的累加器的变量是0，在被action算子触发计算后，累加器在map函数中调用，然后会累加，内置的累加器有：</p>
+<ul>
+<li>LongAccumulator: 长整型累加器，64位整数。用于求和，计数，求均值。</li>
+<li>DoubleAccumulator: 双精度累加器，双精度浮点数。用于求和，计数，求均值。</li>
+<li>CollectionAccumulator[T]: 集合型累加器，可以用来收集所需信息的集合。<br>以上三种都继承自：AccumulatorV2,此外，仍然可以自定义累加器。</li>
+</ul>
+<h4 id="RDD-血统-Lineage"><a href="#RDD-血统-Lineage" class="headerlink" title="RDD 血统(Lineage)"></a>RDD 血统(Lineage)</h4><p>RDD的依赖图(dependency graph),记录所有rdd的依赖关系<br>Node: RDDs<br>Edges: 依赖关系</p>
+<h4 id="容错（Fault-tolerance）"><a href="#容错（Fault-tolerance）" class="headerlink" title="容错（Fault tolerance）"></a>容错（Fault tolerance）</h4><p>当worker fail的时候，rdd的所有分区都会丢。<br>但是通过Lineage，我们可以重新得到rdd.同时，这部分的task，会被分配给其他的worker  </p>
+<h3 id="DAG-in-Spark"><a href="#DAG-in-Spark" class="headerlink" title="DAG in Spark"></a>DAG in Spark</h3><p>Direct graph with no cycle   </p>
+<ul>
+<li>Node: RDD, result   </li>
+<li>Edge: RDD 之间的Operations<br>在Action的阶段，DAG会被submit到DAG Scheduler上。之后会被进一步分解成task. DAG也能比mapreduce做更好的全局优化<h4 id="Stages-and-Tasks"><a href="#Stages-and-Tasks" class="headerlink" title="Stages and Tasks"></a>Stages and Tasks</h4>DAG Scheduler 会把图分解成多个stages, stages的生成是基于算子。<br>窄依赖会被合并到一个stages里面，宽依赖会分割成两个stages.这些stages会被submit到task scheduler.<br>task的数量取决于partition的数量。没有依赖关系的stages可以被集群并行处理   <h4 id="Lineage-vs-DAG-in-Spark"><a href="#Lineage-vs-DAG-in-Spark" class="headerlink" title="Lineage vs. DAG in Spark"></a>Lineage vs. DAG in Spark</h4></li>
+<li>相同的数据结构（都是图）</li>
+<li>不同的end nodes</li>
+<li>Spark里面的role不同</li>
+</ul>
+<h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><h2 id="MapReduce-中的数据结构"><a href="#MapReduce-中的数据结构" class="headerlink" title="MapReduce 中的数据结构"></a>MapReduce 中的数据结构</h2><p>key-value pairs，key和value可以是任意的数据结构<br>MapReduce的算法，可以用被apply再任意的数据上，比如 网页的collection,key就是urls,value就可以是HTML.</p>
+<h2 id="Map-and-Reduce"><a href="#Map-and-Reduce" class="headerlink" title="Map and Reduce"></a>Map and Reduce</h2><ul>
+<li>Map<ol>
+<li>读数据(RDD in Spark)</li>
+<li>会产生key-value pairs的中间数据</li>
+</ol>
+</li>
+<li>Reduce<ol>
+<li>从先前的多个map的jobs中，接受key-value的pairs</li>
+<li>聚合中间数据，到最终结果</li>
+</ol>
+</li>
+</ul>
+<h2 id="Hadoop中的-mapreduce"><a href="#Hadoop中的-mapreduce" class="headerlink" title="Hadoop中的 mapreduce"></a>Hadoop中的 mapreduce</h2><ul>
+<li><p>数据存储在HDFS上（以blocks的方式存储）</p>
+</li>
+<li><p>Hadoop中，mapreduce会把数据分割成fix-size的小数据，然后，为每个小数据生成一个map task. Map task, 会为小数据跑user-defined map function.</p>
+</li>
+<li><p>小数据的size，通常都是HDFS的block的size</p>
+</li>
+<li><p>Data locality optimization</p>
+<ul>
+<li>当数据在HDFS上，map task在node上跑。这也是小数据的size，和hdfs的size一样。<br>  • The largest size of the input that can be guaranteed to be stored on a single<br>  node<br>  • If the split spanned two blocks, it would be unlikely that any HDFS node<br>  stored both block</li>
+</ul>
+</li>
+<li><p>Map的task会把结果写到local disk上(不是hdfs)</p>
+<ol>
+<li>Map 的结果是中间结果</li>
+<li>一旦job完成，map的结果就可以直接抛弃</li>
+<li>假如中间结果存在hdfs上(会有replication)，可能会导致过载(overkill)</li>
+<li>假如当前Node的map task fails, hadoop会自动把map task转移到其他节点</li>
+</ol>
+</li>
+<li><p>Reduce 的task，没有局部数据的优势</p>
+<ol>
+<li>通常来说，all map的task的结果，都会被合到一个reduce的task</li>
+<li>reduce的结果会被保存在hdfs上以保证数据的可靠性</li>
+<li>reduce的task的结果，不由input的size决定。而是单独的设定</li>
+</ol>
+</li>
+</ul>
+<p>再细节点：<br>当我们有多个reducers时，map task需要partition他们的结果</p>
+<ul>
+<li>一个reduce task一个partition</li>
+<li>一个中间结果的key都再一个partition里面</li>
+<li>partition的过程，可以再user-defined paritioning function中设定</li>
+</ul>
+<p><img src="/2021/05/10/spark/hadoop-partition.PNG" alt="hadoop-partition"></p>
+<h2 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h2><p>shuffle 是数据重分布的过程</p>
+<ul>
+<li>确保每个reducer得到同个key的所有相关values</li>
+<li>需要grouping</li>
+</ul>
+<p>Tips： Spark 和 hadoop 用的是不同的方法来shuffle</p>
+<h3 id="Hadoop-中的shuffle（由framework处理）"><a href="#Hadoop-中的shuffle（由framework处理）" class="headerlink" title="Hadoop 中的shuffle（由framework处理）"></a>Hadoop 中的shuffle（由framework处理）</h3><ul>
+<li>发生在每个map 和 reduce的阶段</li>
+<li>使用shuffle和sort机制： Map的结果，按照key排序，发生在map结束后，开始排序</li>
+<li>用combiner 去减少数据的shuffle<ol>
+<li>Combiner 可以按照key来combine 所有的 key-value的对(pairs)</li>
+<li>combiner不是由framework来处理<br>例子：hadoop中wordcount的过程<br><img src="/2021/05/10/spark/hadoop-wordcount.PNG" alt="hadoop-wordcount"></li>
+</ol>
+</li>
+</ul>
+<h3 id="Spark中的shuffle"><a href="#Spark中的shuffle" class="headerlink" title="Spark中的shuffle"></a>Spark中的shuffle</h3><p>（<a target="_blank" rel="noopener" href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=71#/detail/pc?id=1982%EF%BC%89">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=71#/detail/pc?id=1982）</a></p>
+<ul>
+<li>shuffle是由某些算子触发: Distinct, join, repartition, all *By, *ByKey, 在stages直接发生<h4 id="Hash-Shuffle"><a href="#Hash-Shuffle" class="headerlink" title="Hash Shuffle"></a>Hash Shuffle</h4></li>
+<li>map端发生，数据被hash partitioned</li>
+<li>产生的文件被用来存储partition data的部分数据<ol>
+<li>“# of mappers X # of reducers</li>
+</ol>
+</li>
+<li>通过合并文件，来减少block的文件数量 <ul>
+<li> From M * R =&gt; E*C/T * R<h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5>快，而且没有爆内存<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5>output文件量大，尤其是block的partition很多的时候<h4 id="Sort-Shuffle"><a href="#Sort-Shuffle" class="headerlink" title="Sort Shuffle"></a>Sort Shuffle</h4></li>
+</ul>
+</li>
+<li>每个mapper 到文件， 用key来对数据排序。对每个chunk,标序</li>
+<li>当map被reducer读取的时候即时合并</li>
+<li>如果partition很小的话，会退化成hash shuffle<br>优点： 创建的文件小<br>缺点： 排序没有hash的速度快<h4 id="Tungsten-shuffle-sort"><a href="#Tungsten-shuffle-sort" class="headerlink" title="Tungsten shuffle-sort"></a>Tungsten shuffle-sort</h4>• More on <a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/SPARK-708">https://issues.apache.org/jira/browse/SPARK-708</a><h2 id="Spark中的-mapreduce"><a href="#Spark中的-mapreduce" class="headerlink" title="Spark中的 mapreduce"></a>Spark中的 mapreduce</h2>spark中的算子（operation）分为 transformation 和 action.<h3 id="核心rdd算子-CombineByKey"><a href="#核心rdd算子-CombineByKey" class="headerlink" title="核心rdd算子 CombineByKey"></a>核心rdd算子 CombineByKey</h3></li>
+<li>作用：RDD([k,v]) =&gt; RDD([k,c]), k: key; v: value; c:combined type </li>
+<li>Core: <ol>
+<li>createCombiner </li>
+<li>mergeValue</li>
+<li>mergeCombiners</li>
+</ol>
+</li>
+<li>eg： <a target="_blank" rel="noopener" href="https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.RDD.combineByKey.html">https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.RDD.combineByKey.html</a></li>
+</ul>
+<h4 id="createCombiner"><a href="#createCombiner" class="headerlink" title="createCombiner"></a>createCombiner</h4><p>V =&gt; C ，这个函数把当前的值作为参数，此时我们可以对其做些附加操作(类型转换)并把它返回 (这一步类似于初始化操作)</p>
+<h4 id="mergeValue"><a href="#mergeValue" class="headerlink" title="mergeValue"></a>mergeValue</h4><p>(C, V) =&gt; C，该函数把元素V合并到之前的元素C(createCombiner)上 (这个操作在每个分区内进行)</p>
+<h4 id="mergeCombiners"><a href="#mergeCombiners" class="headerlink" title="mergeCombiners"></a>mergeCombiners</h4><p>(C, C) =&gt; C，该函数把2个元素C合并 (这个操作会跨分区间进行)</p>
+<h3 id="衍生1-reduceByKey"><a href="#衍生1-reduceByKey" class="headerlink" title="衍生1 reduceByKey"></a>衍生1 reduceByKey</h3><p>同key的value合并，比如 rdd.reduceByKey(lambda x, y: x+y)<br>这个函数中的 createCombiner： lambda v: v；mergeValue，mergeCombiners 都是 func<br>好处：shuffe前就会combines,以及避免用groupByKey<br><img src="/2021/05/10/spark/rdd-reduceByKey.PNG" alt="rdd-reduceByKey"></p>
+<h3 id="衍生2-groupByKey"><a href="#衍生2-groupByKey" class="headerlink" title="衍生2 groupByKey"></a>衍生2 groupByKey</h3><p>rdd中，按照key去 group 数据，组成一个序列。然后，在另一个rdd中按照key去做shuffle<br><img src="/2021/05/10/spark/rdd-groupByKey.PNG" alt="rdd-groupByKey"></p>
+<h3 id="Spark中的MR效率"><a href="#Spark中的MR效率" class="headerlink" title="Spark中的MR效率"></a>Spark中的MR效率</h3><h4 id="transformation-的数量"><a href="#transformation-的数量" class="headerlink" title="transformation 的数量"></a>transformation 的数量</h4><p>每个transformation 都有rdd的lineary scan<br>eg:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rdd &#x3D; sc.parallelize(data) # data: (id, score) pairs</span><br><span class="line">•Bad design</span><br><span class="line">maxByKey &#x3D; rdd.combineByKey(…)</span><br><span class="line">sumByKey &#x3D; rdd.combineByKey(…)</span><br><span class="line">sumMaxRdd &#x3D; maxByKey.join(sumByKey)</span><br><span class="line"></span><br><span class="line">•Good design</span><br><span class="line">sumMaxRdd &#x3D; rdd.combineByKey(…)</span><br></pre></td></tr></table></figure>
+
+<h4 id="transformation-的大小"><a href="#transformation-的大小" class="headerlink" title="transformation 的大小"></a>transformation 的大小</h4><p>越小，cost也就越小</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rdd &#x3D; sc.parallelize(data) # data: (word, 1) pairs</span><br><span class="line">•Bad design</span><br><span class="line">countRdd &#x3D; rdd.reduceByKey(…)</span><br><span class="line">fileteredRdd &#x3D; countRdd.filter(…)</span><br><span class="line">•Good design</span><br><span class="line">fileteredRdd &#x3D; countRdd.filter(…)</span><br><span class="line">countRdd &#x3D; fileteredRdd.reduceByKey(…</span><br></pre></td></tr></table></figure>
+
+<h4 id="shuffles"><a href="#shuffles" class="headerlink" title="shuffles"></a>shuffles</h4><p>尽量避免shuffle.性能的瓶颈，往往都在I/O和网络上，以及数据的序列化和反序列化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rdd &#x3D; sc.parallelize(data) # data: (word, 1) pairs</span><br><span class="line">•Bad design</span><br><span class="line">countRdd &#x3D; rdd.reduceByKey(…)</span><br><span class="line">fileteredRdd &#x3D; countRdd.filter(…)</span><br><span class="line">•Good design</span><br><span class="line">fileteredRdd &#x3D; countRdd.filter(…)</span><br><span class="line">countRdd &#x3D; fileteredRdd.reduceByKey(…)</span><br></pre></td></tr></table></figure>
+
+<h3 id="如何合并两个RDD？"><a href="#如何合并两个RDD？" class="headerlink" title="如何合并两个RDD？"></a>如何合并两个RDD？</h3><h4 id="Union"><a href="#Union" class="headerlink" title="Union"></a>Union</h4><p>Concatenate two RDDs<br>How do A and B union together?<br>•What is the number of partitions for the union of A and B?<br>•Case 1: Different partitioner:<br>• Note: default partitioner is None<br>•Case 2: Same partitioner:   </p>
+<h4 id="Zip"><a href="#Zip" class="headerlink" title="Zip"></a>Zip</h4><p>Pair two RDDs<br>Key-Value pairs after A.zip(B)<br>•Key: tuples in A<br>•Value: tuples in B<br>•Assumes that the two RDDs have<br>•The same number of partitions<br>•The same number of elements in each partition<br>•E.g., 1-to-1 map   </p>
+<h4 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h4><p>Merge based on the keys from 2 RDDs,Just like join in DB<br>•join<br>•leftOuterJoin<br>•rightOuterJoin<br>•fullOuterJoin      </p>
+<h1 id="Spark-优化"><a href="#Spark-优化" class="headerlink" title="Spark 优化"></a>Spark 优化</h1><h2 id="大小表join的优化"><a href="#大小表join的优化" class="headerlink" title="大小表join的优化"></a>大小表join的优化</h2><p>(<a target="_blank" rel="noopener" href="https://blog.csdn.net/wlk_328909605/article/details/82933552?utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control&amp;dist_request_id=1619770363106_51540&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromMachineLearnPai2~default-1.control%EF%BC%89">https://blog.csdn.net/wlk_328909605/article/details/82933552?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control&amp;dist_request_id=1619770363106_51540&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control）</a></p>
+<h3 id="小表对大表-broadcast-join"><a href="#小表对大表-broadcast-join" class="headerlink" title="小表对大表 broadcast  join"></a>小表对大表 broadcast  join</h3><p>广播小表，且被广播的表需要小于spark.sql.autoBroadcastJoinThreshold 所配置的值，默认是10M （或者加了 broadcast  join的hint。此外，基表不能被广播，比如leftouterjoin时，只能广播右表<br><img src="/2021/05/10/spark/boardcast-join.PNG" alt="boardcast-join">   </p>
+<h3 id="Shuffle-Hash-Join"><a href="#Shuffle-Hash-Join" class="headerlink" title="Shuffle Hash Join"></a>Shuffle Hash Join</h3><p>以上 broadcast join 仅在小表时候高效，当表大的时候，使用broadcast会导致driver和executor端的压力。这里，我们可以通过partition的方式，来将大批量的数据分成小份的数据集并行计算。<br>利用同key相同，分区也相同的原理。对大表的join做分治： 也就是先将表划分成n个分区，再多两个表中相对应的数据进行hash join。   </p>
+<h4 id="shuffle-hash-join的步骤"><a href="#shuffle-hash-join的步骤" class="headerlink" title="shuffle hash join的步骤:"></a>shuffle hash join的步骤:</h4><ul>
+<li>对两张表按照join的keys，进行重分区。目的是为了让相同的key的记录分到对应的分区中</li>
+<li>对对应分区中的数据进行join。这里会先将小表分区构造成一个hash表。然后根据大表分区中记录的join keys值拿出来进行匹配<h4 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h4></li>
+</ul>
+<ol>
+<li>分区的平均大小不超过spark.sql.autoBroadcastJoinThreshold所配置的值，默认是10M</li>
+<li>基表不能被广播，比如left outer join时，只能广播右表</li>
+<li>一侧的表要明显小于另外一侧，小的一侧将被广播（明显小于的定义为3倍小，此处为经验值）<br><img src="/2021/05/10/spark/Shuffle-Hash-Join.PNG" alt="Shuffle Hash Join"><h3 id="大表对大表-Sort-Merge-Join"><a href="#大表对大表-Sort-Merge-Join" class="headerlink" title="大表对大表 Sort Merge Join"></a>大表对大表 Sort Merge Join</h3>两个表，按照join keys进行重新的shuffle.来保证join keys值相同的记录会被分在对应的分区。分区后对每个分区内的数据进行排序。排序后再对对应的分区记录进行连接。<br>由于两个序列都是有序的，从头遍历。碰到相同key就输出。不同的key，左边小就用左边的。右边小就用右边的。（用完就丢）<br><img src="/2021/05/10/spark/Sort-Merge-Join.PNG" alt="Sort-Merge-Join"></li>
+</ol>
+<h2 id="Spark的结构调优"><a href="#Spark的结构调优" class="headerlink" title="Spark的结构调优"></a>Spark的结构调优</h2><ul>
+<li>加内存  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spark-shell –-driver-memory 8g </span><br><span class="line">spark-shell –-executor-memory 8g </span><br></pre></td></tr></table></figure>
+<h3 id="Driver-调优"><a href="#Driver-调优" class="headerlink" title="Driver 调优"></a>Driver 调优</h3><h3 id="Executor-调优"><a href="#Executor-调优" class="headerlink" title="Executor 调优"></a>Executor 调优</h3><h3 id="Shuffle-的调优"><a href="#Shuffle-的调优" class="headerlink" title="Shuffle 的调优"></a>Shuffle 的调优</h3></li>
+</ul>
+<h2 id="spark-缓存-cache"><a href="#spark-缓存-cache" class="headerlink" title="spark 缓存(cache)"></a>spark 缓存(cache)</h2><p>(<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhuiqiuuuu/article/details/79290221">https://blog.csdn.net/zhuiqiuuuu/article/details/79290221</a>)</p>
+<h3 id="RDD-缓存"><a href="#RDD-缓存" class="headerlink" title="RDD 缓存"></a>RDD 缓存</h3><p>Spark调优有个原则，就是对多次使用的rdd进行持久化。持久化的操作，只要用rdd.cache()或rdd.persist()<br>cache(): 使用非序列化的方式，将rdd的数据全部尝试持久化到内存中，cache是一个transformation算子，需要action来触发，才能真正的把rdd缓存到内存中。<br>persist(): 手动选择持久化级别，并用指定方式进行持久化。<br>缓存方式有以下：</p>
+<ul>
+<li>NONE :什么类型都不是</li>
+<li>DISK_ONLY：磁盘</li>
+<li>DISK_ONLY_2：磁盘；双副本</li>
+<li>MEMORY_ONLY： 内存；反序列化；把RDD作为反序列化的方式存储，假如RDD的内容存不下，剩余的分区在以后需要时会重新计算，不会刷到磁盘上。</li>
+<li>MEMORY_ONLY_2：内存；反序列化；双副本</li>
+<li>MEMORY_ONLY_SER：内存；序列化；这种序列化方式，每一个partition以字节数据存储，好处是能带来更好的空间存储，但CPU耗费高</li>
+<li>MEMORY_ONLY_SER_2 : 内存；序列化；双副本</li>
+<li>MEMORY_AND_DISK：内存 + 磁盘；反序列化；双副本；RDD以反序列化的方式存内存，假如RDD的内容存不下，剩余的会存到磁盘</li>
+<li>MEMORY_AND_DISK_2 : 内存 + 磁盘；反序列化；双副本</li>
+<li>MEMORY_AND_DISK_SER：内存 + 磁盘；序列化  </li>
+<li>MEMORY_AND_DISK_SER_2：内存 + 磁盘；序列化；双副本<h3 id="存储级别"><a href="#存储级别" class="headerlink" title="存储级别"></a>存储级别</h3>rdd在默认情况下满足的，就不需要更换。<br>假如MEMORY_ONLY不一定满足，可以使用MEMORY_ONLY_SER再加上一个序列化框架(kyro)。序列化就是为了节省空间。<br>不要写到磁盘，这样成本会变高，数据太大的时候，可以过滤一部分的数据再存。<h3 id="移除缓存"><a href="#移除缓存" class="headerlink" title="移除缓存"></a>移除缓存</h3>spark会自动地监控每个节点的使用情况，以一种LRU的机制（least-recently-used：最近很少使用）去自动移除。如果想手工代替这种自动去移除，可以使用RDD.unpersist()去处理</li>
+</ul>
+<h3 id="Dataframe-缓存"><a href="#Dataframe-缓存" class="headerlink" title="Dataframe 缓存"></a>Dataframe 缓存</h3><p>语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlContext.cacheTable(&quot;...&quot;)</span><br><span class="line">dataFrame.cache()</span><br></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;缓存全表</span><br><span class="line">sqlContext.sql(&quot;CACHE TABLE activity&quot;)</span><br><span class="line">&#x2F;&#x2F;缓存过滤结果</span><br><span class="line">sqlContext.sql(&quot;CACHE TABLE activity_cached as select * from activity where ...&quot;)</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
