@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="如何用spark读取含有特殊字符的本地文件最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。 比如一个csv文件，他的数据是这样的： 1234name,age,scorexiaoming,18,61xiaozhang,20,89... 这种情况下往往我们都会用最常见的读取csv的操作 12val sample_df &amp;">
+  <meta name="description" content="最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。 比如一个csv文件，他的数据是这样的： 1234name,age,scorexiaoming,18,61xiaozhang,20,89... 这种情况下往往我们都会用最常见的读取csv的操作 12val sample_df &#x3D; spark.read.form">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spark">
+<meta property="og:title" content="如何用spark读取含有特殊字符的本地文件">
 <meta property="og:url" content="http://example.com/2021/11/03/spark-read-file/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="如何用spark读取含有特殊字符的本地文件最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。 比如一个csv文件，他的数据是这样的： 1234name,age,scorexiaoming,18,61xiaozhang,20,89... 这种情况下往往我们都会用最常见的读取csv的操作 12val sample_df &amp;">
+<meta property="og:description" content="最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。 比如一个csv文件，他的数据是这样的： 1234name,age,scorexiaoming,18,61xiaozhang,20,89... 这种情况下往往我们都会用最常见的读取csv的操作 12val sample_df &#x3D; spark.read.form">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-03T08:08:39.000Z">
-<meta property="article:modified_time" content="2021-11-03T09:56:33.625Z">
+<meta property="article:modified_time" content="2021-11-03T09:58:52.487Z">
 <meta property="article:author" content="ray">
 <meta property="article:tag" content="大数据学习">
 <meta name="twitter:card" content="summary">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>spark | Hexo</title>
+  <title>如何用spark读取含有特殊字符的本地文件 | Hexo</title>
   
 
 
@@ -164,7 +164,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          spark
+          如何用spark读取含有特殊字符的本地文件
         </h1>
 
         <div class="post-meta">
@@ -175,7 +175,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-11-03 16:08:39 / Modified: 17:56:33" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
+              <time title="Created: 2021-11-03 16:08:39 / Modified: 17:58:52" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
             </span>
 
           
@@ -189,7 +189,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="如何用spark读取含有特殊字符的本地文件"><a href="#如何用spark读取含有特殊字符的本地文件" class="headerlink" title="如何用spark读取含有特殊字符的本地文件"></a>如何用spark读取含有特殊字符的本地文件</h1><p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
+        <p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
 <p>比如一个csv文件，他的数据是这样的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">xiaoming,18,61</span><br><span class="line">xiaozhang,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>这种情况下往往我们都会用最常见的读取csv的操作</p>
@@ -308,7 +308,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%94%A8spark%E8%AF%BB%E5%8F%96%E5%90%AB%E6%9C%89%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">如何用spark读取含有特殊字符的本地文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-1-%E6%95%B0%E6%8D%AE%E6%9C%AC%E8%BA%AB%E5%B0%B1%E6%9C%89%E9%80%97%E5%8F%B7"><span class="nav-number">1.1.</span> <span class="nav-text">Case 1 数据本身就有逗号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-2-%E6%95%B0%E6%8D%AE%E5%90%AB%E6%9C%89%E5%9B%9E%E8%BD%A6"><span class="nav-number">1.2.</span> <span class="nav-text">Case 2 数据含有回车</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%80%9A%E7%94%A8%E8%A7%A3"><span class="nav-number">1.3.</span> <span class="nav-text">一个通用解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pyarrow%E7%9A%84%E5%B0%8F%E5%9D%91"><span class="nav-number">1.3.1.</span> <span class="nav-text">安装pyarrow的小坑</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-1-%E6%95%B0%E6%8D%AE%E6%9C%AC%E8%BA%AB%E5%B0%B1%E6%9C%89%E9%80%97%E5%8F%B7"><span class="nav-number">1.</span> <span class="nav-text">Case 1 数据本身就有逗号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-2-%E6%95%B0%E6%8D%AE%E5%90%AB%E6%9C%89%E5%9B%9E%E8%BD%A6"><span class="nav-number">2.</span> <span class="nav-text">Case 2 数据含有回车</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%80%9A%E7%94%A8%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">一个通用解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pyarrow%E7%9A%84%E5%B0%8F%E5%9D%91"><span class="nav-number">3.1.</span> <span class="nav-text">安装pyarrow的小坑</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

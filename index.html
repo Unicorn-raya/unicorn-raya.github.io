@@ -159,7 +159,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/03/spark-read-file/" class="post-title-link" itemprop="url">spark</a>
+            <a href="/2021/11/03/spark-read-file/" class="post-title-link" itemprop="url">如何用spark读取含有特殊字符的本地文件</a>
         </h2>
 
         <div class="post-meta">
@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-11-03 16:08:39 / Modified: 17:56:33" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
+              <time title="Created: 2021-11-03 16:08:39 / Modified: 17:58:52" itemprop="dateCreated datePublished" datetime="2021-11-03T16:08:39+08:00">2021-11-03</time>
             </span>
 
           
@@ -184,7 +184,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="如何用spark读取含有特殊字符的本地文件"><a href="#如何用spark读取含有特殊字符的本地文件" class="headerlink" title="如何用spark读取含有特殊字符的本地文件"></a>如何用spark读取含有特殊字符的本地文件</h1><p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
+          <p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
 <p>比如一个csv文件，他的数据是这样的：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">xiaoming,18,61</span><br><span class="line">xiaozhang,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>这种情况下往往我们都会用最常见的读取csv的操作</p>
