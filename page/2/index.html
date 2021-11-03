@@ -145,6 +145,109 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/spark-read-file/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/10/spark-read-file/" class="post-title-link" itemprop="url">spark</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-05-10 14:08:39" itemprop="dateCreated datePublished" datetime="2021-05-10T14:08:39+08:00">2021-05-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-11-03 17:14:05" itemprop="dateModified" datetime="2021-11-03T17:14:05+08:00">2021-11-03</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="如何用spark读取含有特殊字符的本地文件"><a href="#如何用spark读取含有特殊字符的本地文件" class="headerlink" title="如何用spark读取含有特殊字符的本地文件"></a>如何用spark读取含有特殊字符的本地文件</h1><p>最近在项目上遇到需要读csv文件的情况，而且还是本地的。中间出现了数据读漏，读岔的情况。这里写一篇日志来总结我在读文件中遇到的坑。</p>
+<p>比如一个csv文件，他的数据是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">xiaoming,18,61</span><br><span class="line">xiaozhang,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这种情况下往往我们都会用最常见的读取csv的操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;delimiter&quot;,&quot;,&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
+<p>然而当数据变成以下情况时候，这种方法就失效了。</p>
+<h2 id="Case-1-数据本身就有逗号"><a href="#Case-1-数据本身就有逗号" class="headerlink" title="Case 1 数据本身就有逗号"></a>Case 1 数据本身就有逗号</h2><p>同样是上述的数据，但是数据变成如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">&quot;xiao,ming&quot;,18,61</span><br><span class="line">&quot;xiaozh,ang&quot;,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>此时仍然用上面的方法，数据会读成这样：<br>|name | age| score<br>|-|-|-<br>|xiao|ming|18<br>|xiaozh|ang|20<br>这是因为当用了 option(“delimiter”,”,”) 的时候，每行数据都会用 “,” 隔开。这就会导致数据出现不正确的分割。要解决这种问题需要用如下的读取方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
+<p>这样，上述的方法就可以读出正确的数据了。</p>
+<h2 id="Case-2-数据含有回车"><a href="#Case-2-数据含有回车" class="headerlink" title="Case 2 数据含有回车"></a>Case 2 数据含有回车</h2><p>还有一种特殊情况，数据是这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">name,age,score</span><br><span class="line">&quot;xiao,m</span><br><span class="line">ing&quot;,18,61</span><br><span class="line">&quot;xiaozh,a</span><br><span class="line">ng&quot;,20,89</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>这种情况上述的方法会失效，上面的两种读取数据的方法都会得到以下的结果</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>age</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xiao,m</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>ing</td>
+<td>18</td>
+<td>61</td>
+</tr>
+</tbody></table>
+<p>在这种情况下，我们需要用如下的方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val sample_df &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;quote&quot;, &quot;\&quot;&quot;).option(&#39;escape&#39;, &quot;\&quot;&quot;).option(&quot;multiline&quot;, True).option(&quot;header&quot;,True).load(LOCAL_FILE_PATH)</span><br><span class="line">sample_df.show(truncate &#x3D; False)</span><br></pre></td></tr></table></figure>
+<h2 id="一个通用解"><a href="#一个通用解" class="headerlink" title="一个通用解"></a>一个通用解</h2><p>如上两种方法可以解决绝大多数的特殊字符问题。然而，当数据本身就不是正规的csv文件时候，以上的两种方法仍然会失效。比如，数据是从一些crm系统导出，或者数据存储的编码类型可能会是gbk但是却存储成utf-8的情况(这里用excel打开会出现各种???,但是用<a target="_blank" rel="noopener" href="https://notepad-plus-plus.org/">notepad++</a>打开就能看到文件的真实样子)这时候，spark就会无能为力。<br>为了保证有一个统一的方案，这里推荐安装 <a target="_blank" rel="noopener" href="https://arrow.apache.org/docs/python/index.html">pyarrow</a> 以及<a target="_blank" rel="noopener" href="https://pandas.pydata.org/">pandas</a> 来读取本地的数据，然后将pandas的dataframe来转成spark的dataframe.<br>经过一些踩坑的处理，我得到最终的本地通用解是以下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pyspark.sql import SparkSession,DataFrame</span><br><span class="line">from pyspark.sql import functions as f</span><br><span class="line">from pyspark.sql.functions import when,udf,concat_ws,col,lit,concat,substring,regexp_replace,date_format,expr</span><br><span class="line">from pyspark.sql.types import DoubleType,IntegerType</span><br><span class="line">import pandas as pd</span><br><span class="line">pd.set_option(&quot;max_columns&quot;,10000)</span><br><span class="line">spark &#x3D; SparkSession.builder.master(&#39;local[*]&#39;).appName(&#39;sample&#39;).config(&quot;spark.executor.memory&quot;, &quot;6g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.driver.memory&quot;, &quot;5g&quot;)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.enabled&quot;,True)\</span><br><span class="line">                                                .config(&quot;spark.memory.offHeap.size&quot;,&quot;10g&quot;).getOrCreate()</span><br><span class="line"></span><br><span class="line">spark.sparkContext.setLogLevel(&quot;ERROR&quot;) </span><br><span class="line">spark.conf.set(&quot;spark.sql.execution.arrow.pyspark.enabled&quot;, &quot;true&quot;)</span><br><span class="line"></span><br><span class="line">def load_csv(spark:SparkSession, path:str, used_column:list &#x3D; None) -&gt; DataFrame:</span><br><span class="line">    if used_column is None:</span><br><span class="line">        used_column &#x3D; spark.read.format(&quot;csv&quot;).option(&quot;header&quot;,True).option(&quot;delimiter&quot;,&quot;,&quot;).load(path).columns</span><br><span class="line">    &quot;&quot;&quot;read csv to spark df&quot;&quot;&quot;</span><br><span class="line">    pd_df &#x3D; pd.read_csv(path,dtype&#x3D;str)[used_column]</span><br><span class="line">    pd_df &#x3D; pd_df.where((pd.notnull(pd_df)), None)</span><br><span class="line">    df &#x3D; spark.createDataFrame(pd_df.astype(str)).replace(&#39;None&#39;,None).replace(&#39;&#39;,None)</span><br><span class="line">    return df</span><br><span class="line">data &#x3D; load_csv(spark,LOCAL_FILE_PATH)</span><br></pre></td></tr></table></figure>
+<p>在用pyarrow的支持下，pandas的dataframe转spark的dataframe会快非常多。其中推荐首先选出需要的column,然后将列转到函数变量，而不是全量加载。此外函数内部同样处理了空值的情况，将None做了额外的处理。否则数据中的空值在pandas中会处理成NaN传递到spark的dataframe中，这种情况会导致df.isNull()/df.isNotNull()判断失效。</p>
+<h3 id="安装pyarrow的小坑"><a href="#安装pyarrow的小坑" class="headerlink" title="安装pyarrow的小坑"></a>安装pyarrow的小坑</h3><p>Q:执行安装命令后没有反应<br>A: 需要安装如下<a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=48145">依赖</a>，假如你的本地装了visual studio，本地会有一个vc2015-2019的依赖，这个依赖会和这两个依赖冲突，需要先卸载visual studio的依赖，再安装这个。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/hadoop-hdfs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -494,7 +597,7 @@ api: java,c, web rest
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

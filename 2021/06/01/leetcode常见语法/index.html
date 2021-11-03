@@ -28,7 +28,7 @@
 <meta property="og:description" content="leetcode的刷题策略按照这里的顺序，目前已经做到hash表。这篇主要整理目前为止遇到的java语法，同时我会对标出对应其他语言，比如c++，python中的对应语法。 数组c++1234567int n &#x3D; 3, m &#x3D; 4;int m_array &#x3D; new int[n]; &#x2F;&#x2F; 一维数组int m_2D_array &#x3D; new">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-06-01T05:08:39.000Z">
-<meta property="article:modified_time" content="2021-06-02T08:59:09.299Z">
+<meta property="article:modified_time" content="2021-06-10T02:22:14.177Z">
 <meta property="article:author" content="ray">
 <meta property="article:tag" content="leetcode">
 <meta property="article:tag" content="java">
@@ -183,7 +183,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-02 16:59:09" itemprop="dateModified" datetime="2021-06-02T16:59:09+08:00">2021-06-02</time>
+                <time title="Modified: 2021-06-10 10:22:14" itemprop="dateModified" datetime="2021-06-10T10:22:14+08:00">2021-06-10</time>
               </span>
 
           
@@ -244,7 +244,7 @@
 <td>O(1)</td>
 </tr>
 </tbody></table>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 初始化</span><br><span class="line">unordered_set&lt;int&gt; s;</span><br><span class="line">unordered_set&lt;int&gt; s(num.begin(),num.end());</span><br><span class="line">&#x2F;&#x2F;搜索</span><br><span class="line">s.find(num) &#x2F;&#x2F; 返回的是num在s中的index</span><br><span class="line">s.insert(num) &#x2F;&#x2F; 插入num</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>std::unordered_set底层实现为哈希表，std::set 和std::multiset 的底层实现是红黑树，红黑树是一种平衡二叉搜索树，所以key值是有序的，但key不可以修改，改动key值会导致整棵树的错乱，所以只能删除和增加。</p>
 <table>
 <thead>
@@ -382,7 +382,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
