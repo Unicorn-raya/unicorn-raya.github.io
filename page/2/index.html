@@ -145,6 +145,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/leetcode232/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/17/leetcode232/" class="post-title-link" itemprop="url">leetcode 232</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-05-17 13:08:39 / Modified: 15:37:25" itemprop="dateCreated datePublished" datetime="2021-05-17T13:08:39+08:00">2021-05-17</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="leetcode-232"><a href="#leetcode-232" class="headerlink" title="leetcode 232"></a>leetcode 232</h1><h2 id="涉及知识点"><a href="#涉及知识点" class="headerlink" title="涉及知识点"></a>涉及知识点</h2><p>动态规划</p>
+<h2 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h2><p>Java</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution&#123;</span><br><span class="line">    public int numWays(int steps, int arrLen)&#123;</span><br><span class="line">        final int mod &#x3D; 1000000007;</span><br><span class="line">        int maxColumn &#x3D;Math.min(arrLen-1, steps);</span><br><span class="line">        int [][]dp &#x3D; new int[steps + 1][maxColumn + 1];</span><br><span class="line">        dp[0][0] &#x3D; 1;</span><br><span class="line">        for(int i &#x3D; 1;i &lt;&#x3D; steps;i++)&#123;</span><br><span class="line">            for(int j &#x3D; 0;j &lt;&#x3D; maxColumn;j++)&#123;</span><br><span class="line">                dp[i][j] &#x3D; dp[i-1][j];</span><br><span class="line">                if (j -1 &gt;&#x3D; 0)&#123;</span><br><span class="line">                    dp[i][j] &#x3D; (dp[i][j] + dp[i-1][j-1]) % mod;</span><br><span class="line">                &#125;</span><br><span class="line">                if (j + 1 &lt;&#x3D; maxColumn)&#123;</span><br><span class="line">                    dp[i][j] &#x3D; (dp[i][j] + dp[i-1][j+1]) % mod;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        return dp[steps][0];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="动态规划简介"><a href="#动态规划简介" class="headerlink" title="动态规划简介"></a>动态规划简介</h3><p>动态规划的核心是 - 找出状态转移方程<br>一例:<br><img src="/2021/05/17/leetcode232/matrix.PNG" alt="matrix"><br>从起点，到终点，求最小权重的路径。这里状态转移方程就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">min_weight(i,j)  &#x3D; d[i][j] + min(d[i-1][j],d[i][j-1])</span><br></pre></td></tr></table></figure>
+<h3 id="题目的分析"><a href="#题目的分析" class="headerlink" title="题目的分析"></a>题目的分析</h3><h4 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h4><p>有一个长度为 arrLen 的数组，开始有一个指针在索引 0 处。<br>每一步操作中，你可以将指针向左或向右移动 1 步，或者停在原地（指针不能被移动到数组范围外）。<br>给你两个整数 steps 和 arrLen ，请你计算并返回：在恰好执行 steps 次操作以后，指针仍然指向索引 0 处的方案数。<br>由于答案可能会很大，请返回方案数 模 10^9 + 7(1000000007) 后的结果。</p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>设计状态转移方程 d[i][j],i 代表steps，j代表索引的位置，value代表可有的方法数目，比如: d[0][0] = 1，就代表在 step 0 时刻，指针在index 为 0 的位置。只有 1 种方法。<br>这里： i和j的范围明显大于0，i小于等于steps。j索引的位置应该小于数组的长度或者是steps的长度，所以</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0 &lt;&#x3D; i &lt;&#x3D; steps</span><br><span class="line">0 &lt;&#x3D; j &lt;&#x3D; min(steps, arrLen)</span><br></pre></td></tr></table></figure>
+<p>状态方程d[i][j]的数据来自于3种路径，分别是：   </p>
+<ol>
+<li>从左到右: d[i-1][j-1]   </li>
+<li>从右到左: d[i-1][j+1]   </li>
+<li>不动: d[i-1][j-1]   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for(int i &#x3D; 1;i &lt;&#x3D; steps;i++)&#123;</span><br><span class="line">   for(int j &#x3D; 0;j &lt;&#x3D; maxColumn;j++)&#123;</span><br><span class="line">       dp[i][j] &#x3D; dp[i-1][j]; &#x2F;&#x2F; 这里代表不动的情况</span><br><span class="line">   &#125;</span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+且要保证，j不会越界，也就是不会小于0, 或者大于min(steps, arrLen)<br>那么状态转移的过程就是  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for(int i &#x3D; 1;i &lt;&#x3D; steps;i++)&#123;</span><br><span class="line">   for(int j &#x3D; 0;j &lt;&#x3D; maxColumn;j++)&#123;</span><br><span class="line">       dp[i][j] &#x3D; dp[i-1][j]; &#x2F;&#x2F; 这里代表不动的情况</span><br><span class="line">       if (j -1 &gt;&#x3D; 0)&#123;        &#x2F;&#x2F; 防止指针左移小于index 0</span><br><span class="line">           dp[i][j] &#x3D; (dp[i][j] + dp[i-1][j-1]) % mod;</span><br><span class="line">       &#125;</span><br><span class="line">       if (j + 1 &lt;&#x3D; maxColumn)&#123; &#x2F;&#x2F; 防止指针右移大于 maxColumn,也就是超过steps或者数组长度</span><br><span class="line">           dp[i][j] &#x3D; (dp[i][j] + dp[i-1][j+1]) % mod;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/spark/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -753,12 +826,12 @@ api: java,c, web rest
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
